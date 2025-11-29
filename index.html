@@ -314,19 +314,22 @@
   </div>
 
   <!-- Script to read alarms from localStorage and show them -->
-  <script>
-   <script>
+<script>
   const alarmListDiv = document.getElementById('alarmList');
   const alarmToast = document.getElementById('alarmToast');
   const alarmToastText = document.getElementById('alarmToastText');
   const alarmToastStop = document.getElementById('alarmToastStop');
 
-  let beepInterval = null;
-  let audioCtx = null;
-  let osc = null;
+  // sound from web
+  const alarmSound = new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
+  let isRinging = false;
 
   function getAlarms() {
-    return JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+    try {
+      return JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+    } catch (e) {
+      return [];
+    }
   }
 
   function renderAlarms() {
@@ -368,68 +371,29 @@
     alarmListDiv.innerHTML = html;
   }
 
-  // ---- RINGTONE STYLE BEEP ----
-  function startBeep() {
-    try {
-      if (audioCtx) {
-        stopBeep();
-      }
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = 880;
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-
-      // pulse effect
-      let on = true;
-      beepInterval = setInterval(() => {
-        if (!gain.gain) return;
-        gain.gain.value = on ? 0.7 : 0.1;
-        on = !on;
-      }, 250);
-    } catch (e) {
-      // ignore if audio blocked
-    }
-  }
-
-  function stopBeep() {
-    try {
-      if (beepInterval) {
-        clearInterval(beepInterval);
-        beepInterval = null;
-      }
-      if (osc) {
-        osc.stop();
-        osc.disconnect();
-        osc = null;
-      }
-      if (audioCtx) {
-        audioCtx.close();
-        audioCtx = null;
-      }
-    } catch (e) {}
-  }
-
-  function showAlarmToast(message) {
+  function startRinging(message) {
     if (!alarmToast) return;
     alarmToastText.textContent = message;
-    alarmToast.classList.add('show');
-    startBeep();
+    alarmToast.style.display = 'flex';
+    isRinging = true;
+    alarmSound.loop = true;
+    alarmSound.play().catch(() => {
+      // browser blocked auto play until first click
+    });
   }
 
-  function hideAlarmToast() {
-    alarmToast.classList.remove('show');
-    stopBeep();
+  function stopRinging() {
+    if (!isRinging) return;
+    isRinging = false;
+    alarmToast.style.display = 'none';
+    alarmSound.pause();
+    alarmSound.currentTime = 0;
   }
 
   if (alarmToastStop) {
-    alarmToastStop.addEventListener('click', hideAlarmToast);
+    alarmToastStop.addEventListener('click', stopRinging);
   }
 
-  // ---- CHECK ALARMS EVERY 30s (same storage as alarm.html) ----
   function checkAlarms() {
     const alarms = getAlarms();
     if (!alarms.length) return;
@@ -468,7 +432,7 @@
               x.slot === key
           );
           if (!already) {
-            showAlarmToast(`Time for ${name} (${label})`);
+            startRinging(`Time for ${name} (${label})`);
             triggered.push({
               id: alarm.id,
               time,
@@ -489,11 +453,10 @@
     }
   }
 
-  // initial render + start checking
+  // initial
   renderAlarms();
   checkAlarms();
   setInterval(checkAlarms, 30000);
-
-  </script>
+</script>
 </body>
 </html>
