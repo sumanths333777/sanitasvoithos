@@ -199,8 +199,50 @@
     <!-- Middle empty chat area -->
     <div class="chat-area">
       <div class="alarm-list"> id="alarmlist"></div
+                     
+    <script>
+  const alarmListDiv = document.getElementById('alarmList');
 
-    .alarm-list {
+  function renderAlarms() {
+    if (!alarmListDiv) return;
+    const alarms = JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+
+    if (!alarms.length) {
+      alarmListDiv.innerHTML =
+        '<div class="empty-state">No medicine alarms yet. Tap “+” to add one.</div>';
+      return;
+    }
+
+    const html = alarms
+      .map((alarm) => {
+        const name = alarm.medicine || 'Unnamed medicine';
+        const t = alarm.times || {};
+        const timesText = [
+          t.beforeBreakfast ? `BB: ${t.beforeBreakfast}` : '',
+          t.afterBreakfast ? `AB: ${t.afterBreakfast}` : '',
+          t.afternoon ? `Afternoon: ${t.afternoon}` : '',
+          t.night ? `Night: ${t.night}` : '',
+        ]
+          .filter(Boolean)
+          .join(' · ');
+
+        return `
+          <div class="alarm-pill">
+            <div class="alarm-pill-left">
+              <div class="alarm-pill-name">${name}</div>
+              <div class="alarm-pill-times">${timesText || 'No time set'}</div>
+            </div>
+            <div class="alarm-pill-tag">MEDICINE</div>
+          </div>
+        `;
+      })
+      .join('');
+
+    alarmListDiv.innerHTML = html;
+  }
+
+  renderAlarms();
+      .alarm-list {
   max-width: 640px;
   margin: 8px auto 0 auto;
   display: flex;
@@ -249,49 +291,7 @@
   color: #8a96aa;
   text-align: center;
   margin-top: 12px;
-}                                            
-    <script>
-  const alarmListDiv = document.getElementById('alarmList');
-
-  function renderAlarms() {
-    if (!alarmListDiv) return;
-    const alarms = JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
-
-    if (!alarms.length) {
-      alarmListDiv.innerHTML =
-        '<div class="empty-state">No medicine alarms yet. Tap “+” to add one.</div>';
-      return;
-    }
-
-    const html = alarms
-      .map((alarm) => {
-        const name = alarm.medicine || 'Unnamed medicine';
-        const t = alarm.times || {};
-        const timesText = [
-          t.beforeBreakfast ? `BB: ${t.beforeBreakfast}` : '',
-          t.afterBreakfast ? `AB: ${t.afterBreakfast}` : '',
-          t.afternoon ? `Afternoon: ${t.afternoon}` : '',
-          t.night ? `Night: ${t.night}` : '',
-        ]
-          .filter(Boolean)
-          .join(' · ');
-
-        return `
-          <div class="alarm-pill">
-            <div class="alarm-pill-left">
-              <div class="alarm-pill-name">${name}</div>
-              <div class="alarm-pill-times">${timesText || 'No time set'}</div>
-            </div>
-            <div class="alarm-pill-tag">MEDICINE</div>
-          </div>
-        `;
-      })
-      .join('');
-
-    alarmListDiv.innerHTML = html;
-  }
-
-  renderAlarms();
+}
 </script>                                            
     </div>
 
