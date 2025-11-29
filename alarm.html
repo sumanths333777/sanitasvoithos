@@ -333,6 +333,26 @@
       setTimeout(() => saveToast.classList.remove('show'), 2200);
     }
 
+    // Simple beep using Web Audio
+    function playBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 880;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        setTimeout(() => {
+          osc.stop();
+          ctx.close();
+        }, 500);
+      } catch (e) {
+        // if audio not allowed, ignore
+      }
+    }
+
     function getAlarms() {
       return JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
     }
@@ -427,8 +447,71 @@
       showToast('Alarm deleted');
     });
 
+    // 🔔 check alarms every 30 seconds
+    function checkAlarms() {
+      const alarms = getAlarms();
+      if (!alarms.length) return;
+
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const nowHM = `${hh}:${mm}`;
+      const today = now.toISOString().slice(0, 10);
+
+      let triggered =
+        JSON.parse(localStorage.getItem('sanitas_alarm_last_trigger') || '[]');
+
+      let changed = false;
+
+      alarms.forEach((alarm) => {
+        const t = alarm.times || {};
+        const name = alarm.medicine || 'medicine';
+
+        const slots = [
+          ['beforeBreakfast', 'Before breakfast'],
+          ['afterBreakfast', 'After breakfast'],
+          ['afternoon', 'Afternoon'],
+          ['night', 'Night'],
+        ];
+
+        slots.forEach(([key, label]) => {
+          const time = t[key];
+          if (!time) return;
+          if (time === nowHM) {
+            const already = triggered.some(
+              (x) =>
+                x.id === alarm.id &&
+                x.time === time &&
+                x.date === today &&
+                x.slot === key
+            );
+            if (!already) {
+              showToast(`Time for ${name} (${label})`);
+              playBeep();
+              triggered.push({
+                id: alarm.id,
+                time,
+                date: today,
+                slot: key,
+              });
+              changed = true;
+            }
+          }
+        });
+      });
+
+      if (changed) {
+        localStorage.setItem(
+          'sanitas_alarm_last_trigger',
+          JSON.stringify(triggered)
+        );
+      }
+    }
+
     // initial load
     renderAlarms();
+    checkAlarms();                // check once immediately
+    setInterval(checkAlarms, 30000); // then every 30 seconds
   </script>
 </body>
 </html>
