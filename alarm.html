@@ -263,20 +263,53 @@
     </div>
   </div>
 
-  <script>
-    const saveButton = document.getElementById('saveButton');
-    const saveToast = document.getElementById('saveToast');
+<script>
+  const saveButton = document.getElementById('saveButton');
+  const saveToast = document.getElementById('saveToast');
+  const nameInput = document.querySelector('.text-input');
+  const timeInputs = document.querySelectorAll('.time-pill');
 
-    saveButton.addEventListener('click', function (e) {
-      e.preventDefault();
-      if (!saveToast) return;
+  function showToast(message) {
+    if (!saveToast) return;
+    saveToast.querySelector('span:last-child').textContent = message;
+    saveToast.classList.add('show');
+    setTimeout(() => saveToast.classList.remove('show'), 2200);
+  }
 
-      saveToast.classList.add('show');
+  saveButton.addEventListener('click', function (e) {
+    e.preventDefault();
 
-      setTimeout(() => {
-        saveToast.classList.remove('show');
-      }, 2200);
-    });
-  </script>
+    const medicine = (nameInput.value || '').trim();
+    const timesArray = Array.from(timeInputs).map((input) => input.value);
+
+    // if everything empty, don’t save
+    const hasAnyTime = timesArray.some(Boolean);
+    if (!medicine && !hasAnyTime) {
+      showToast('Enter medicine or time first');
+      return;
+    }
+
+    const alarm = {
+      id: Date.now(),
+      medicine,
+      times: {
+        beforeBreakfast: timesArray[0] || '',
+        afterBreakfast: timesArray[1] || '',
+        afternoon: timesArray[2] || '',
+        night: timesArray[3] || '',
+      },
+    };
+
+    // read old data
+    const existing = JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+    existing.push(alarm);
+    localStorage.setItem('sanitas_alarms', JSON.stringify(existing));
+
+    showToast('Medicine alarm saved');
+
+    // optional: clear name, but keep times
+    nameInput.value = '';
+  });
+</script>
 </body>
 </html>
