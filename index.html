@@ -5,6 +5,12 @@
   <title>SANITAS VOITHOS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- SANITAS font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
   <style>
     * {
       box-sizing: border-box;
@@ -23,19 +29,20 @@
     }
 
     /* MAIN APP CONTAINER */
-  .app-frame {
-  width: 100%;
-  max-width: 900px;
-  height: 92vh;
-  background: #ffffff;
-  border-radius: 28px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e3eefb;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  margin: 0 auto;          /* 🔹 force horizontal center */
-}
+    .app-frame {
+      width: 100%;
+      max-width: 900px;
+      height: 92vh;
+      background: #ffffff;
+      border-radius: 28px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e3eefb;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      margin: 0 auto; /* center in wide screens */
+    }
+
     /* Top header bar */
     .top-bar {
       padding: 14px 18px 0 18px;
@@ -89,19 +96,21 @@
       border-radius: 14px;
       padding: 18px 18px 20px 18px;
       text-align: center;
-      margin: 0 8px 10px 8px;
+      margin: 0 auto 10px auto;
+      width: calc(100% - 16px);
     }
 
- .title-band {
-  background: #e0f1ff;
-  border-radius: 14px;
-  padding: 18px 18px 20px 18px;
-  text-align: center;
-  margin: 0 auto 10px auto;   /* 🔹 centred inside frame */
-  width: calc(100% - 16px);   /* same left-right breathing */
-}
+    .title-main {
+      font-family: "Montserrat", sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      color: #0f4f96;
+      text-transform: uppercase;
+    }
 
     .title-sub {
+      font-family: "Montserrat", sans-serif;
       font-size: 14px;
       margin-top: 4px;
       color: #3c5270;
@@ -168,15 +177,14 @@
     }
 
     /* Bottom search bar */
-  
     .bottom-bar {
       padding: 12px 16px 18px 16px;
       background: #ffffff;
       display: flex;
-      justify-content: center;   /* center the bar */
-}
+      justify-content: center;
+    }
 
-.search-box {
+    .search-box {
       border-radius: 999px;
       border: 2px solid #1b73d1;
       padding: 10px 16px;
@@ -184,10 +192,11 @@
       align-items: center;
       gap: 8px;
       background: #f8fcff;
-      width: 100%;               /* full width */
-      max-width: 520px;          /* nice big bar */
-      margin: 0 auto;            /* center */
-}
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
     .search-input {
       border: none;
       outline: none;
@@ -205,34 +214,36 @@
       font-size: 16px;
       opacity: 0.8;
     }
-/* Alarm ringing toast on home page */
-.alarm-toast {
-  position: fixed;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #0f4f96;
-  color: #ffffff;
-  padding: 14px 20px;
-  border-radius: 20px;
-  display: none;
-  align-items: center;
-  gap: 12px;
-  z-index: 9999;
-}
 
-.alarm-toast-icon {
-  font-size: 22px;
-}
+    /* Alarm ringing toast on home page */
+    .alarm-toast {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f4f96;
+      color: #ffffff;
+      padding: 14px 20px;
+      border-radius: 20px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      z-index: 9999;
+    }
 
-.alarm-toast-stop {
-  background: #ffffff22;
-  color: white;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 12px;
-  cursor: pointer;
-} 
+    .alarm-toast-icon {
+      font-size: 22px;
+    }
+
+    .alarm-toast-stop {
+      background: #ffffff22;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
     /* MOBILE MODE */
     @media (max-width: 600px) {
       body {
@@ -262,7 +273,6 @@
         <div class="top-row-left">
           <!-- + button goes to alarm page -->
           <a href="alarm.html" class="plus-btn">+</a>
-       
         </div>
         <div class="top-row-right">
           <div class="dot-menu">
@@ -272,13 +282,15 @@
           </div>
         </div>
       </div>
-   <!-- Alarm ringing toast -->
-    <div class="alarm-toast" id="alarmToast">
-      <span class="alarm-toast-icon">⏰</span>
-      <span id="alarmToastText">Time for medicine</span>
-      <button class="alarm-toast-stop" id="alarmToastStop">Stop</button>
-    </div>
-      
+
+      <!-- Alarm ringing toast -->
+      <div class="alarm-toast" id="alarmToast">
+        <span class="alarm-toast-icon">⏰</span>
+        <span id="alarmToastText">Time for medicine</span>
+        <button class="alarm-toast-stop" id="alarmToastStop">Stop</button>
+      </div>
+
+      <!-- SANITAS band -->
       <div class="title-band">
         <div class="title-main">SANITAS</div>
         <div class="title-sub">Voithos</div>
@@ -302,143 +314,132 @@
       </div>
     </div>
   </div>
-<button id="testSoundBtn" style="margin: 8px auto 16px auto; display:block; font-size:12px;">
 
-</button>
-  
   <!-- Script to read alarms from localStorage and show them -->
-<script>
-  const alarmListDiv = document.getElementById('alarmList');
-  const alarmToast = document.getElementById('alarmToast');
-  const alarmToastText = document.getElementById('alarmToastText');
-  const alarmToastStop = document.getElementById('alarmToastStop');
+  <script>
+    const alarmListDiv = document.getElementById('alarmList');
+    const alarmToast = document.getElementById('alarmToast');
+    const alarmToastText = document.getElementById('alarmToastText');
+    const alarmToastStop = document.getElementById('alarmToastStop');
 
-  // alarm sound
- const alarmSound = new Audio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3');
-  alarmSound.loop = true;
-    
-  // 🔊 Test button – click to check if sound works at all
-const testSoundBtn = document.getElementById('testSoundBtn');
-if (testSoundBtn) {
-  testSoundBtn.addEventListener('click', () => {
-    alarmSound.currentTime = 0;
-    alarmSound.play().catch(() => {});
-  });
-}
+    // alarm sound
+    const alarmSound = new Audio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3');
+    alarmSound.loop = true;
 
-  // keep track of alarms that already rang today (in memory only)
-  const triggeredToday = {};
+    // keep track of alarms that already rang today (in memory only)
+    const triggeredToday = {};
 
-  function getAlarms() {
-    try {
-      return JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
-    } catch (e) {
-      return [];
-    }
-  }
-
-  function renderAlarms() {
-    if (!alarmListDiv) return;
-
-    const alarms = getAlarms();
-
-    if (!alarms.length) {
-      alarmListDiv.innerHTML =
-        '<div class="empty-state">No medicine alarms yet. Tap “+” to add one.</div>';
-      return;
+    function getAlarms() {
+      try {
+        return JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+      } catch (e) {
+        return [];
+      }
     }
 
-    let html = '';
-    alarms.forEach((alarm) => {
-      const name = alarm.medicine || 'Unnamed medicine';
-      const t = alarm.times || {};
-      const parts = [];
-      if (t.beforeBreakfast) parts.push('BB: ' + t.beforeBreakfast);
-      if (t.afterBreakfast) parts.push('AB: ' + t.afterBreakfast);
-      if (t.afternoon) parts.push('Afternoon: ' + t.afternoon);
-      if (t.night) parts.push('Night: ' + t.night);
-      const timesText = parts.join(' · ') || 'No time set';
+    function renderAlarms() {
+      if (!alarmListDiv) return;
 
-      html += `
-        <div class="alarm-pill">
-          <div class="alarm-pill-left">
-            <div class="alarm-pill-name">${name}</div>
-            <div class="alarm-pill-times">${timesText}</div>
+      const alarms = getAlarms();
+
+      if (!alarms.length) {
+        alarmListDiv.innerHTML =
+          '<div class="empty-state">No medicine alarms yet. Tap “+” to add one.</div>';
+        return;
+      }
+
+      let html = '';
+      alarms.forEach((alarm) => {
+        const name = alarm.medicine || 'Unnamed medicine';
+        const t = alarm.times || {};
+        const parts = [];
+        if (t.beforeBreakfast) parts.push('BB: ' + t.beforeBreakfast);
+        if (t.afterBreakfast) parts.push('AB: ' + t.afterBreakfast);
+        if (t.afternoon) parts.push('Afternoon: ' + t.afternoon);
+        if (t.night) parts.push('Night: ' + t.night);
+        const timesText = parts.join(' · ') || 'No time set';
+
+        html += `
+          <div class="alarm-pill">
+            <div class="alarm-pill-left">
+              <div class="alarm-pill-name">${name}</div>
+              <div class="alarm-pill-times">${timesText}</div>
+            </div>
+            <div class="alarm-pill-tag">MEDICINE</div>
           </div>
-          <div class="alarm-pill-tag">MEDICINE</div>
-        </div>
-      `;
-    });
-
-    alarmListDiv.innerHTML = html;
-  }
-function showAlarm(message) {
-  // 1) Show banner if element exists
-  if (alarmToast && alarmToastText) {
-    alarmToastText.textContent = message;
-    alarmToast.style.display = 'flex';
-  }
-
-  // 2) Play sound
-  alarmSound.play().catch(() => {
-    // ignore if autoplay blocked
-  });
-
-  // 3) Extra popup on small screens (phone backup)
-  if (window.innerWidth < 700) {
-    alert(message);
-  }
-}
-  function stopAlarm() {
-    alarmToast.style.display = 'none';
-    alarmSound.pause();
-    alarmSound.currentTime = 0;
-  }
-
-  if (alarmToastStop) {
-    alarmToastStop.addEventListener('click', stopAlarm);
-  }
-
-  function checkAlarms() {
-    const alarms = getAlarms();
-    if (!alarms.length) return;
-
-    const now = new Date();
-    const hh = String(now.getHours()).padStart(2, '0');
-    const mm = String(now.getMinutes()).padStart(2, '0');
-    const nowHM = `${hh}:${mm}`;
-    const dateKey = now.toISOString().slice(0, 10); // YYYY-MM-DD
-
-    alarms.forEach((alarm) => {
-      const name = alarm.medicine || 'medicine';
-      const t = alarm.times || {};
-
-      const slots = [
-        ['beforeBreakfast', 'Before breakfast'],
-        ['afterBreakfast', 'After breakfast'],
-        ['afternoon', 'Afternoon'],
-        ['night', 'Night'],
-      ];
-
-      slots.forEach(([slotKey, label]) => {
-        const time = t[slotKey];
-        if (!time) return;
-        if (time === nowHM) {
-          const key = `${dateKey}-${alarm.id}-${slotKey}`;
-          if (!triggeredToday[key]) {
-            triggeredToday[key] = true;
-            showAlarm(`Time for ${name} (${label})`);
-          }
-        }
+        `;
       });
-    });
-  }
 
-  // initial render + start checking every second
-  renderAlarms();
-  checkAlarms();
-  setInterval(checkAlarms, 1000);
-</script>
-  
+      alarmListDiv.innerHTML = html;
+    }
+
+    function showAlarm(message) {
+      // 1) Show banner if element exists
+      if (alarmToast && alarmToastText) {
+        alarmToastText.textContent = message;
+        alarmToast.style.display = 'flex';
+      }
+
+      // 2) Play sound
+      alarmSound.play().catch(() => {
+        // ignore if autoplay blocked
+      });
+
+      // 3) Extra popup on small screens (phone backup)
+      if (window.innerWidth < 700) {
+        alert(message);
+      }
+    }
+
+    function stopAlarm() {
+      alarmToast.style.display = 'none';
+      alarmSound.pause();
+      alarmSound.currentTime = 0;
+    }
+
+    if (alarmToastStop) {
+      alarmToastStop.addEventListener('click', stopAlarm);
+    }
+
+    function checkAlarms() {
+      const alarms = getAlarms();
+      if (!alarms.length) return;
+
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const nowHM = `${hh}:${mm}`;
+      const dateKey = now.toISOString().slice(0, 10); // YYYY-MM-DD
+
+      alarms.forEach((alarm) => {
+        const name = alarm.medicine || 'medicine';
+        const t = alarm.times || {};
+
+        const slots = [
+          ['beforeBreakfast', 'Before breakfast'],
+          ['afterBreakfast', 'After breakfast'],
+          ['afternoon', 'Afternoon'],
+          ['night', 'Night'],
+        ];
+
+        slots.forEach(([slotKey, label]) => {
+          const time = t[slotKey];
+          if (!time) return;
+          if (time === nowHM) {
+            const key = `${dateKey}-${alarm.id}-${slotKey}`;
+            if (!triggeredToday[key]) {
+              triggeredToday[key] = true;
+              showAlarm(`Time for ${name} (${label})`);
+            }
+          }
+        });
+      });
+    }
+
+    // initial render + start checking every second
+    renderAlarms();
+    checkAlarms();
+    setInterval(checkAlarms, 1000);
+  </script>
 </body>
 </html>
