@@ -204,7 +204,45 @@
       font-size: 16px;
       opacity: 0.8;
     }
+/* Alarm ringing toast on home page */
+.alarm-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 90px;
+  transform: translateX(-50%) translateY(20px);
+  background: #1b3f7a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
+.alarm-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.alarm-toast-icon {
+  font-size: 16px;
+}
+
+.alarm-toast-stop {
+  border: none;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  background: #ffb3b3;
+  color: #7a1010;
+  cursor: pointer;
+}
     /* MOBILE MODE */
     @media (max-width: 600px) {
       body {
@@ -234,6 +272,7 @@
         <div class="top-row-left">
           <!-- + button goes to alarm page -->
           <a href="alarm.html" class="plus-btn">+</a>
+       
         </div>
         <div class="top-row-right">
           <div class="dot-menu">
@@ -243,7 +282,13 @@
           </div>
         </div>
       </div>
-
+   <!-- Alarm ringing toast -->
+    <div class="alarm-toast" id="alarmToast">
+      <span class="alarm-toast-icon">⏰</span>
+      <span id="alarmToastText">Time for medicine</span>
+      <button class="alarm-toast-stop" id="alarmToastStop">Stop</button>
+    </div>
+      
       <div class="title-band">
         <div class="title-main">SANITAS</div>
         <div class="title-sub">Voithos</div>
@@ -270,48 +315,185 @@
 
   <!-- Script to read alarms from localStorage and show them -->
   <script>
-    const alarmListDiv = document.getElementById('alarmList');
+   <script>
+  const alarmListDiv = document.getElementById('alarmList');
+  const alarmToast = document.getElementById('alarmToast');
+  const alarmToastText = document.getElementById('alarmToastText');
+  const alarmToastStop = document.getElementById('alarmToastStop');
 
-    function renderAlarms() {
-      if (!alarmListDiv) return;
+  let beepInterval = null;
+  let audioCtx = null;
+  let osc = null;
 
-      const alarms = JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+  function getAlarms() {
+    return JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+  }
 
-      if (!alarms.length) {
-        alarmListDiv.innerHTML =
-          '<div class="empty-state">No medicine alarms yet. Tap “+” to add one.</div>';
-        return;
-      }
+  function renderAlarms() {
+    if (!alarmListDiv) return;
 
-      const html = alarms
-        .map((alarm) => {
-          const name = alarm.medicine || 'Unnamed medicine';
-          const t = alarm.times || {};
-          const timesText = [
-            t.beforeBreakfast ? `BB: ${t.beforeBreakfast}` : '',
-            t.afterBreakfast ? `AB: ${t.afterBreakfast}` : '',
-            t.afternoon ? `Afternoon: ${t.afternoon}` : '',
-            t.night ? `Night: ${t.night}` : '',
-          ]
-            .filter(Boolean)
-            .join(' · ');
+    const alarms = getAlarms();
 
-          return `
-            <div class="alarm-pill">
-              <div class="alarm-pill-left">
-                <div class="alarm-pill-name">${name}</div>
-                <div class="alarm-pill-times">${timesText || 'No time set'}</div>
-              </div>
-              <div class="alarm-pill-tag">MEDICINE</div>
-            </div>
-          `;
-        })
-        .join('');
-
-      alarmListDiv.innerHTML = html;
+    if (!alarms.length) {
+      alarmListDiv.innerHTML =
+        '<div class="empty-state">No medicine alarms yet. Tap “+” to add one.</div>';
+      return;
     }
 
-    renderAlarms();
+    const html = alarms
+      .map((alarm) => {
+        const name = alarm.medicine || 'Unnamed medicine';
+        const t = alarm.times || {};
+        const timesText = [
+          t.beforeBreakfast ? `BB: ${t.beforeBreakfast}` : '',
+          t.afterBreakfast ? `AB: ${t.afterBreakfast}` : '',
+          t.afternoon ? `Afternoon: ${t.afternoon}` : '',
+          t.night ? `Night: ${t.night}` : '',
+        ]
+          .filter(Boolean)
+          .join(' · ');
+
+        return `
+          <div class="alarm-pill">
+            <div class="alarm-pill-left">
+              <div class="alarm-pill-name">${name}</div>
+              <div class="alarm-pill-times">${timesText || 'No time set'}</div>
+            </div>
+            <div class="alarm-pill-tag">MEDICINE</div>
+          </div>
+        `;
+      })
+      .join('');
+
+    alarmListDiv.innerHTML = html;
+  }
+
+  // ---- RINGTONE STYLE BEEP ----
+  function startBeep() {
+    try {
+      if (audioCtx) {
+        stopBeep();
+      }
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 880;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+
+      // pulse effect
+      let on = true;
+      beepInterval = setInterval(() => {
+        if (!gain.gain) return;
+        gain.gain.value = on ? 0.7 : 0.1;
+        on = !on;
+      }, 250);
+    } catch (e) {
+      // ignore if audio blocked
+    }
+  }
+
+  function stopBeep() {
+    try {
+      if (beepInterval) {
+        clearInterval(beepInterval);
+        beepInterval = null;
+      }
+      if (osc) {
+        osc.stop();
+        osc.disconnect();
+        osc = null;
+      }
+      if (audioCtx) {
+        audioCtx.close();
+        audioCtx = null;
+      }
+    } catch (e) {}
+  }
+
+  function showAlarmToast(message) {
+    if (!alarmToast) return;
+    alarmToastText.textContent = message;
+    alarmToast.classList.add('show');
+    startBeep();
+  }
+
+  function hideAlarmToast() {
+    alarmToast.classList.remove('show');
+    stopBeep();
+  }
+
+  if (alarmToastStop) {
+    alarmToastStop.addEventListener('click', hideAlarmToast);
+  }
+
+  // ---- CHECK ALARMS EVERY 30s (same storage as alarm.html) ----
+  function checkAlarms() {
+    const alarms = getAlarms();
+    if (!alarms.length) return;
+
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const nowHM = `${hh}:${mm}`;
+    const today = now.toISOString().slice(0, 10);
+
+    let triggered =
+      JSON.parse(localStorage.getItem('sanitas_alarm_last_trigger') || '[]');
+
+    let changed = false;
+
+    alarms.forEach((alarm) => {
+      const t = alarm.times || {};
+      const name = alarm.medicine || 'medicine';
+
+      const slots = [
+        ['beforeBreakfast', 'Before breakfast'],
+        ['afterBreakfast', 'After breakfast'],
+        ['afternoon', 'Afternoon'],
+        ['night', 'Night'],
+      ];
+
+      slots.forEach(([key, label]) => {
+        const time = t[key];
+        if (!time) return;
+        if (time === nowHM) {
+          const already = triggered.some(
+            (x) =>
+              x.id === alarm.id &&
+              x.time === time &&
+              x.date === today &&
+              x.slot === key
+          );
+          if (!already) {
+            showAlarmToast(`Time for ${name} (${label})`);
+            triggered.push({
+              id: alarm.id,
+              time,
+              date: today,
+              slot: key,
+            });
+            changed = true;
+          }
+        }
+      });
+    });
+
+    if (changed) {
+      localStorage.setItem(
+        'sanitas_alarm_last_trigger',
+        JSON.stringify(triggered)
+      );
+    }
+  }
+
+  // initial render + start checking
+  renderAlarms();
+  checkAlarms();
+  setInterval(checkAlarms, 30000);
+
   </script>
 </body>
 </html>
