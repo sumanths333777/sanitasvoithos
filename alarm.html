@@ -36,7 +36,7 @@
       position: relative;
     }
 
-    /* TOP – same SANITAS VOITHOS header */
+    /* TOP – SANITAS VOITHOS header */
     .top-bar {
       padding: 14px 18px 0 18px;
       background: #ffffff;
@@ -64,7 +64,7 @@
       color: #3c5270;
     }
 
-    /* FORM AREA */
+    /* FORM AREA + LIST */
     .form-area {
       flex: 1;
       padding: 18px 20px 8px 20px;
@@ -120,6 +120,63 @@
       font-size: 13px;
       color: #1c3a70;
       outline: none;
+    }
+
+    /* SAVED ALARM LIST ON THIS PAGE */
+    .saved-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #8a96aa;
+      margin: 18px 2px 8px 2px;
+    }
+
+    .alarm-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .alarm-pill {
+      border-radius: 16px;
+      border: 1px solid #e3eefb;
+      background: #f8fcff;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .alarm-pill-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .alarm-pill-name {
+      font-weight: 600;
+      color: #1b3f7a;
+    }
+
+    .alarm-pill-times {
+      margin-top: 3px;
+      color: #65718a;
+    }
+
+    .alarm-pill-delete {
+      border: none;
+      background: #ffe3e3;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: #b3261e;
+      cursor: pointer;
+    }
+
+    .empty-small {
+      font-size: 12px;
+      color: #98a3b7;
+      margin-top: 4px;
     }
 
     /* SAVE BUTTON */
@@ -210,7 +267,7 @@
       </div>
     </div>
 
-    <!-- FORM -->
+    <!-- FORM + LIST -->
     <div class="form-area">
       <div class="field-block">
         <div class="field-label">Medicine</div>
@@ -242,6 +299,11 @@
           <input class="time-pill" type="time" />
         </div>
       </div>
+
+      <!-- Saved alarms section -->
+      <div class="saved-title">Saved medicine alarms</div>
+      <div class="alarm-list" id="alarmList"></div>
+      <div class="empty-small" id="emptySmall"></div>
     </div>
 
     <!-- SAVE -->
@@ -261,12 +323,63 @@
     const saveToast = document.getElementById('saveToast');
     const nameInput = document.querySelector('.text-input');
     const timeInputs = document.querySelectorAll('.time-pill');
+    const alarmListDiv = document.getElementById('alarmList');
+    const emptySmall = document.getElementById('emptySmall');
 
     function showToast(message) {
       if (!saveToast) return;
       saveToast.querySelector('span:last-child').textContent = message;
       saveToast.classList.add('show');
       setTimeout(() => saveToast.classList.remove('show'), 2200);
+    }
+
+    function getAlarms() {
+      return JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+    }
+
+    function setAlarms(arr) {
+      localStorage.setItem('sanitas_alarms', JSON.stringify(arr));
+    }
+
+    function renderAlarms() {
+      const alarms = getAlarms();
+
+      if (!alarms.length) {
+        alarmListDiv.innerHTML = '';
+        emptySmall.textContent = 'No alarms saved yet.';
+        return;
+      }
+
+      emptySmall.textContent = '';
+
+      const html = alarms
+        .map((alarm) => {
+          const name = alarm.medicine || 'Unnamed medicine';
+          const t = alarm.times || {};
+          const timesText = [
+            t.beforeBreakfast ? `BB: ${t.beforeBreakfast}` : '',
+            t.afterBreakfast ? `AB: ${t.afterBreakfast}` : '',
+            t.afternoon ? `Afternoon: ${t.afternoon}` : '',
+            t.night ? `Night: ${t.night}` : '',
+          ]
+            .filter(Boolean)
+            .join(' · ');
+
+          return `
+            <div class="alarm-pill">
+              <div class="alarm-pill-left">
+                <div class="alarm-pill-name">${name}</div>
+                <div class="alarm-pill-times">${timesText || 'No time set'}</div>
+              </div>
+              <button class="alarm-pill-delete" data-id="${alarm.id}">
+                Delete
+              </button>
+            </div>
+          `;
+        })
+        .join('');
+
+      alarmListDiv.innerHTML = html;
     }
 
     saveButton.addEventListener('click', function (e) {
@@ -292,13 +405,30 @@
         },
       };
 
-      const existing = JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+      const existing = getAlarms();
       existing.push(alarm);
-      localStorage.setItem('sanitas_alarms', JSON.stringify(existing));
+      setAlarms(existing);
 
       showToast('Medicine alarm saved');
       nameInput.value = '';
+      renderAlarms();
     });
+
+    // delete handler
+    alarmListDiv.addEventListener('click', (e) => {
+      const btn = e.target.closest('.alarm-pill-delete');
+      if (!btn) return;
+
+      const id = btn.getAttribute('data-id');
+      let alarms = getAlarms();
+      alarms = alarms.filter((a) => String(a.id) !== String(id));
+      setAlarms(alarms);
+      renderAlarms();
+      showToast('Alarm deleted');
+    });
+
+    // initial load
+    renderAlarms();
   </script>
 </body>
 </html>
