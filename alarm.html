@@ -307,7 +307,8 @@
 
     <!-- SAVE -->
     <div class="save-bar">
-      <button class="save-btn" id="saveButton">Save</button>
+      <!-- note: onclick here -->
+      <button class="save-btn" id="saveButton" onclick="saveAlarm(event)">Save</button>
     </div>
 
     <!-- SUCCESS POPUP -->
@@ -318,7 +319,6 @@
   </div>
 
   <script>
-    const saveButton = document.getElementById('saveButton');
     const saveToast = document.getElementById('saveToast');
     const nameInput = document.querySelector('.text-input');
     const timeInputs = document.querySelectorAll('.time-pill');
@@ -381,8 +381,8 @@
       alarmListDiv.innerHTML = html;
     }
 
-    saveButton.addEventListener('click', function (e) {
-      e.preventDefault();
+    function saveAlarm(e) {
+      if (e) e.preventDefault();
 
       const medicine = (nameInput.value || '').trim();
       const timesArray = Array.from(timeInputs).map((input) => input.value);
@@ -411,7 +411,7 @@
       showToast('Medicine alarm saved');
       nameInput.value = '';
       renderAlarms();
-    });
+    }
 
     alarmListDiv.addEventListener('click', (e) => {
       const btn = e.target.closest('.alarm-pill-delete');
