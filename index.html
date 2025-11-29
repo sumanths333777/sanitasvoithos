@@ -316,15 +316,6 @@
  const alarmSound = new Audio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3');
   alarmSound.loop = true;
   
-  // 🔊 Test button – click to check if sound works at all
-const testSoundBtn = document.getElementById('testSoundBtn');
-if (testSoundBtn) {
-  testSoundBtn.addEventListener('click', () => {
-    alarmSound.currentTime = 0;
-    alarmSound.play().catch(() => {});
-  });
-}
-
   // keep track of alarms that already rang today (in memory only)
   const triggeredToday = {};
 
