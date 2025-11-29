@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SANITAS VOITHOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: #f3f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .app-frame {
+      width: 100%;
+      max-width: 430px;
+      height: 90vh;
+      background: #ffffff;
+      border-radius: 32px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e3eefb;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top header bar */
+    .top-bar {
+      padding: 14px 18px 0 18px;
+      background: #ffffff;
+    }
+
+    .top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .top-row-left,
+    .top-row-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .plus-btn {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1b73d1;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .dot-menu {
+      width: 4px;
+      height: 18px;
+      border-radius: 999px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .dot-menu span {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #1b73d1;
+      display: block;
+    }
+
+    /* SANITAS band */
+    .title-band {
+      background: #e0f1ff;
+      border-radius: 14px;
+      padding: 18px 18px 20px 18px;
+      text-align: center;
+      margin: 0 8px 10px 8px;
+    }
+
+    .title-main {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #0f4f96;
+      text-transform: uppercase;
+    }
+
+    .title-sub {
+      font-size: 14px;
+      margin-top: 4px;
+      color: #3c5270;
+    }
+
+    /* Chat area (empty for now) */
+    .chat-area {
+      flex: 1;
+      background: #ffffff;
+      padding: 8px 14px;
+      overflow-y: auto;
+    }
+
+    /* Bottom search bar */
+    .bottom-bar {
+      padding: 12px 16px 18px 16px;
+      background: #ffffff;
+    }
+
+    .search-box {
+      border-radius: 999px;
+      border: 2px solid #1b73d1;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fcff;
+    }
+
+    .search-icon {
+      font-size: 16px;
+      opacity: 0.8;
+    }
+
+    .search-input {
+      border: none;
+      outline: none;
+      background: transparent;
+      width: 100%;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .search-input::placeholder {
+      color: #9da7b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-frame">
+    <!-- Top header -->
+    <div class="top-bar">
+      <div class="top-row">
+        <div class="top-row-left">
+          <div class="plus-btn">+</div>
+        </div>
+
+        <div class="top-row-right">
+          <div class="dot-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="title-band">
+        <div class="title-main">SANITAS</div>
+        <div class="title-sub">Voithos</div>
+      </div>
+    </div>
+
+    <!-- Middle empty chat area -->
+    <div class="chat-area">
+      <!-- Messages will come later -->
+    </div>
+
+    <!-- Bottom search bar -->
+    <div class="bottom-bar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Search"
+        />
+      </div>
+    </div>
+  </div>
+</body>
+</html>
