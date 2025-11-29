@@ -1,1 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SANITAS – Alarms</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: #f3f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .app-frame {
+      width: 100%;
+      max-width: 900px;
+      height: 92vh;
+      background: #ffffff;
+      border-radius: 28px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e3eefb;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .top-bar {
+      padding: 14px 18px 0 18px;
+      background: #ffffff;
+    }
+
+    .title-band {
+      background: #e0f1ff;
+      border-radius: 14px;
+      padding: 18px 18px 20px 18px;
+      text-align: center;
+      margin: 0 8px 10px 8px;
+    }
+
+    .title-main {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #0f4f96;
+      text-transform: uppercase;
+    }
+
+    .title-sub {
+      font-size: 14px;
+      margin-top: 4px;
+      color: #3c5270;
+    }
+
+    .alarm-area {
+      flex: 1;
+      padding: 10px 18px 4px 18px;
+      overflow-y: auto;
+      background: #ffffff;
+    }
+
+    .alarm-section-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #8a96aa;
+      margin-bottom: 8px;
+    }
+
+    .alarm-card {
+      border-radius: 18px;
+      border: 1px solid #e3eefb;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f9fcff;
+    }
+
+    .alarm-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .alarm-time {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1b3f7a;
+    }
+
+    .alarm-label {
+      font-size: 13px;
+      margin-top: 2px;
+      color: #6e7b90;
+    }
+
+    .alarm-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alarm-tag {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #e4f2ff;
+      color: #305c9b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .alarm-toggle {
+      width: 44px;
+      height: 24px;
+      border-radius: 999px;
+      background: #d1e8ff;
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .alarm-toggle-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #1b73d1;
+    }
+
+    .alarm-toggle.off {
+      background: #e
