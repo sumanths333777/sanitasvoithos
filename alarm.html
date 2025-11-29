@@ -33,10 +33,10 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      position: relative; /* for popup */
+      position: relative;
     }
 
-    /* TOP – SANITAS VOITHOS header */
+    /* TOP – same SANITAS VOITHOS header */
     .top-bar {
       padding: 14px 18px 0 18px;
       background: #ffffff;
@@ -196,26 +196,19 @@
       .title-main {
         font-size: 22px;
       }
-      .back-btn {
-  background: none;
-  border: none;
-  font-size: 26px;
-  cursor: pointer;
-  color: #0f4f96;
-  margin-right: 12px;
-}
     }
   </style>
 </head>
-<div class="top-bar">
+
+<body>
+  <div class="app-frame">
+    <!-- HEADER -->
+    <div class="top-bar">
       <div class="title-band">
         <div class="title-main">SANITAS</div>
         <div class="title-sub">Voithos</div>
       </div>
     </div>
-<body>
-  <div class="app-frame">
-    <!-- HEADER -->
 
     <!-- FORM -->
     <div class="form-area">
@@ -263,53 +256,49 @@
     </div>
   </div>
 
-<script>
-  const saveButton = document.getElementById('saveButton');
-  const saveToast = document.getElementById('saveToast');
-  const nameInput = document.querySelector('.text-input');
-  const timeInputs = document.querySelectorAll('.time-pill');
+  <script>
+    const saveButton = document.getElementById('saveButton');
+    const saveToast = document.getElementById('saveToast');
+    const nameInput = document.querySelector('.text-input');
+    const timeInputs = document.querySelectorAll('.time-pill');
 
-  function showToast(message) {
-    if (!saveToast) return;
-    saveToast.querySelector('span:last-child').textContent = message;
-    saveToast.classList.add('show');
-    setTimeout(() => saveToast.classList.remove('show'), 2200);
-  }
-
-  saveButton.addEventListener('click', function (e) {
-    e.preventDefault();
-
-    const medicine = (nameInput.value || '').trim();
-    const timesArray = Array.from(timeInputs).map((input) => input.value);
-
-    // if everything empty, don’t save
-    const hasAnyTime = timesArray.some(Boolean);
-    if (!medicine && !hasAnyTime) {
-      showToast('Enter medicine or time first');
-      return;
+    function showToast(message) {
+      if (!saveToast) return;
+      saveToast.querySelector('span:last-child').textContent = message;
+      saveToast.classList.add('show');
+      setTimeout(() => saveToast.classList.remove('show'), 2200);
     }
 
-    const alarm = {
-      id: Date.now(),
-      medicine,
-      times: {
-        beforeBreakfast: timesArray[0] || '',
-        afterBreakfast: timesArray[1] || '',
-        afternoon: timesArray[2] || '',
-        night: timesArray[3] || '',
-      },
-    };
+    saveButton.addEventListener('click', function (e) {
+      e.preventDefault();
 
-    // read old data
-    const existing = JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
-    existing.push(alarm);
-    localStorage.setItem('sanitas_alarms', JSON.stringify(existing));
+      const medicine = (nameInput.value || '').trim();
+      const timesArray = Array.from(timeInputs).map((input) => input.value);
 
-    showToast('Medicine alarm saved');
+      const hasAnyTime = timesArray.some(Boolean);
+      if (!medicine && !hasAnyTime) {
+        showToast('Enter medicine or time first');
+        return;
+      }
 
-    // optional: clear name, but keep times
-    nameInput.value = '';
-  });
-</script>
+      const alarm = {
+        id: Date.now(),
+        medicine,
+        times: {
+          beforeBreakfast: timesArray[0] || '',
+          afterBreakfast: timesArray[1] || '',
+          afternoon: timesArray[2] || '',
+          night: timesArray[3] || '',
+        },
+      };
+
+      const existing = JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+      existing.push(alarm);
+      localStorage.setItem('sanitas_alarms', JSON.stringify(existing));
+
+      showToast('Medicine alarm saved');
+      nameInput.value = '';
+    });
+  </script>
 </body>
 </html>
