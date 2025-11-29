@@ -33,9 +33,10 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      position: relative; /* for popup */
     }
 
-    /* TOP – same SANITAS VOITHOS header, no icons */
+    /* TOP – SANITAS VOITHOS header */
     .top-bar {
       padding: 14px 18px 0 18px;
       background: #ffffff;
@@ -111,19 +112,14 @@
 
     .time-pill {
       min-width: 96px;
-      padding: 8px 14px;
+      padding: 6px 10px;
       border-radius: 999px;
       border: 1px solid #b5cff5;
       background: #edf4ff;
       text-align: center;
       font-size: 13px;
-      letter-spacing: 0.05em;
       color: #1c3a70;
       outline: none;
-    }
-
-    .time-pill::placeholder {
-      color: #9aa7bd;
     }
 
     /* SAVE BUTTON */
@@ -151,6 +147,35 @@
     .save-btn:active {
       transform: translateY(1px);
       box-shadow: 0 6px 14px rgba(18, 86, 170, 0.25);
+    }
+
+    /* ✅ SUCCESS POPUP */
+    .save-toast {
+      position: absolute;
+      left: 50%;
+      bottom: 90px;
+      transform: translateX(-50%) translateY(20px);
+      background: #0f9d58;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .save-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .save-toast-icon {
+      font-size: 14px;
     }
 
     /* MOBILE */
@@ -199,30 +224,52 @@
       <div class="field-block">
         <div class="dose-row">
           <div class="dose-label">Before Breakfast</div>
-    <input class="time-pill" type="time" />
+          <input class="time-pill" type="time" />
         </div>
 
         <div class="dose-row">
           <div class="dose-label">After Breakfast</div>
-<input class="time-pill" type="time" />
+          <input class="time-pill" type="time" />
         </div>
 
         <div class="dose-row">
           <div class="dose-label">Afternoon</div>
-<input class="time-pill" type="time" />
+          <input class="time-pill" type="time" />
         </div>
 
         <div class="dose-row">
           <div class="dose-label">Night</div>
-<input class="time-pill" type="time" />
+          <input class="time-pill" type="time" />
         </div>
       </div>
     </div>
 
     <!-- SAVE -->
     <div class="save-bar">
-      <button class="save-btn">Save</button>
+      <button class="save-btn" id="saveButton">Save</button>
+    </div>
+
+    <!-- SUCCESS POPUP -->
+    <div class="save-toast" id="saveToast">
+      <span class="save-toast-icon">✅</span>
+      <span>Medicine alarm saved</span>
     </div>
   </div>
+
+  <script>
+    const saveButton = document.getElementById('saveButton');
+    const saveToast = document.getElementById('saveToast');
+
+    saveButton.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (!saveToast) return;
+
+      saveToast.classList.add('show');
+
+      setTimeout(() => {
+        saveToast.classList.remove('show');
+      }, 2200);
+    });
+  </script>
 </body>
 </html>
