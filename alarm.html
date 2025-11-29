@@ -318,200 +318,116 @@
     </div>
   </div>
 
-  <script>
-    const saveButton = document.getElementById('saveButton');
-    const saveToast = document.getElementById('saveToast');
-    const nameInput = document.querySelector('.text-input');
-    const timeInputs = document.querySelectorAll('.time-pill');
-    const alarmListDiv = document.getElementById('alarmList');
-    const emptySmall = document.getElementById('emptySmall');
+ <script>
+  const saveButton = document.getElementById('saveButton');
+  const saveToast = document.getElementById('saveToast');
+  const nameInput = document.querySelector('.text-input');
+  const timeInputs = document.querySelectorAll('.time-pill');
+  const alarmListDiv = document.getElementById('alarmList');
+  const emptySmall = document.getElementById('emptySmall');
 
-    function showToast(message) {
-      if (!saveToast) return;
-      saveToast.querySelector('span:last-child').textContent = message;
-      saveToast.classList.add('show');
-      setTimeout(() => saveToast.classList.remove('show'), 2200);
+  function showToast(message) {
+    if (!saveToast) return;
+    saveToast.querySelector('span:last-child').textContent = message;
+    saveToast.classList.add('show');
+    setTimeout(() => saveToast.classList.remove('show'), 2200);
+  }
+
+  function getAlarms() {
+    return JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+  }
+
+  function setAlarms(arr) {
+    localStorage.setItem('sanitas_alarms', JSON.stringify(arr));
+  }
+
+  function renderAlarms() {
+    const alarms = getAlarms();
+
+    if (!alarms.length) {
+      alarmListDiv.innerHTML = '';
+      emptySmall.textContent = 'No alarms saved yet.';
+      return;
     }
 
-    // Simple beep using Web Audio
-    function playBeep() {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = 880;
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        setTimeout(() => {
-          osc.stop();
-          ctx.close();
-        }, 500);
-      } catch (e) {
-        // if audio not allowed, ignore
-      }
-    }
+    emptySmall.textContent = '';
 
-    function getAlarms() {
-      return JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
-    }
-
-    function setAlarms(arr) {
-      localStorage.setItem('sanitas_alarms', JSON.stringify(arr));
-    }
-
-    function renderAlarms() {
-      const alarms = getAlarms();
-
-      if (!alarms.length) {
-        alarmListDiv.innerHTML = '';
-        emptySmall.textContent = 'No alarms saved yet.';
-        return;
-      }
-
-      emptySmall.textContent = '';
-
-      const html = alarms
-        .map((alarm) => {
-          const name = alarm.medicine || 'Unnamed medicine';
-          const t = alarm.times || {};
-          const timesText = [
-            t.beforeBreakfast ? `BB: ${t.beforeBreakfast}` : '',
-            t.afterBreakfast ? `AB: ${t.afterBreakfast}` : '',
-            t.afternoon ? `Afternoon: ${t.afternoon}` : '',
-            t.night ? `Night: ${t.night}` : '',
-          ]
-            .filter(Boolean)
-            .join(' · ');
-
-          return `
-            <div class="alarm-pill">
-              <div class="alarm-pill-left">
-                <div class="alarm-pill-name">${name}</div>
-                <div class="alarm-pill-times">${timesText || 'No time set'}</div>
-              </div>
-              <button class="alarm-pill-delete" data-id="${alarm.id}">
-                Delete
-              </button>
-            </div>
-          `;
-        })
-        .join('');
-
-      alarmListDiv.innerHTML = html;
-    }
-
-    saveButton.addEventListener('click', function (e) {
-      e.preventDefault();
-
-      const medicine = (nameInput.value || '').trim();
-      const timesArray = Array.from(timeInputs).map((input) => input.value);
-
-      const hasAnyTime = timesArray.some(Boolean);
-      if (!medicine && !hasAnyTime) {
-        showToast('Enter medicine or time first');
-        return;
-      }
-
-      const alarm = {
-        id: Date.now(),
-        medicine,
-        times: {
-          beforeBreakfast: timesArray[0] || '',
-          afterBreakfast: timesArray[1] || '',
-          afternoon: timesArray[2] || '',
-          night: timesArray[3] || '',
-        },
-      };
-
-      const existing = getAlarms();
-      existing.push(alarm);
-      setAlarms(existing);
-
-      showToast('Medicine alarm saved');
-      nameInput.value = '';
-      renderAlarms();
-    });
-
-    // delete handler
-    alarmListDiv.addEventListener('click', (e) => {
-      const btn = e.target.closest('.alarm-pill-delete');
-      if (!btn) return;
-
-      const id = btn.getAttribute('data-id');
-      let alarms = getAlarms();
-      alarms = alarms.filter((a) => String(a.id) !== String(id));
-      setAlarms(alarms);
-      renderAlarms();
-      showToast('Alarm deleted');
-    });
-
-    // 🔔 check alarms every 30 seconds
-    function checkAlarms() {
-      const alarms = getAlarms();
-      if (!alarms.length) return;
-
-      const now = new Date();
-      const hh = String(now.getHours()).padStart(2, '0');
-      const mm = String(now.getMinutes()).padStart(2, '0');
-      const nowHM = `${hh}:${mm}`;
-      const today = now.toISOString().slice(0, 10);
-
-      let triggered =
-        JSON.parse(localStorage.getItem('sanitas_alarm_last_trigger') || '[]');
-
-      let changed = false;
-
-      alarms.forEach((alarm) => {
+    const html = alarms
+      .map((alarm) => {
+        const name = alarm.medicine || 'Unnamed medicine';
         const t = alarm.times || {};
-        const name = alarm.medicine || 'medicine';
+        const timesText = [
+          t.beforeBreakfast ? `BB: ${t.beforeBreakfast}` : '',
+          t.afterBreakfast ? `AB: ${t.afterBreakfast}` : '',
+          t.afternoon ? `Afternoon: ${t.afternoon}` : '',
+          t.night ? `Night: ${t.night}` : '',
+        ]
+          .filter(Boolean)
+          .join(' · ');
 
-        const slots = [
-          ['beforeBreakfast', 'Before breakfast'],
-          ['afterBreakfast', 'After breakfast'],
-          ['afternoon', 'Afternoon'],
-          ['night', 'Night'],
-        ];
+        return `
+          <div class="alarm-pill">
+            <div class="alarm-pill-left">
+              <div class="alarm-pill-name">${name}</div>
+              <div class="alarm-pill-times">${timesText || 'No time set'}</div>
+            </div>
+            <button class="alarm-pill-delete" data-id="${alarm.id}">
+              Delete
+            </button>
+          </div>
+        `;
+      })
+      .join('');
 
-        slots.forEach(([key, label]) => {
-          const time = t[key];
-          if (!time) return;
-          if (time === nowHM) {
-            const already = triggered.some(
-              (x) =>
-                x.id === alarm.id &&
-                x.time === time &&
-                x.date === today &&
-                x.slot === key
-            );
-            if (!already) {
-              showToast(`Time for ${name} (${label})`);
-              playBeep();
-              triggered.push({
-                id: alarm.id,
-                time,
-                date: today,
-                slot: key,
-              });
-              changed = true;
-            }
-          }
-        });
-      });
+    alarmListDiv.innerHTML = html;
+  }
 
-      if (changed) {
-        localStorage.setItem(
-          'sanitas_alarm_last_trigger',
-          JSON.stringify(triggered)
-        );
-      }
+  saveButton.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    const medicine = (nameInput.value || '').trim();
+    const timesArray = Array.from(timeInputs).map((input) => input.value);
+
+    const hasAnyTime = timesArray.some(Boolean);
+    if (!medicine && !hasAnyTime) {
+      showToast('Enter medicine or time first');
+      return;
     }
 
-    // initial load
+    const alarm = {
+      id: Date.now(),
+      medicine,
+      times: {
+        beforeBreakfast: timesArray[0] || '',
+        afterBreakfast: timesArray[1] || '',
+        afternoon: timesArray[2] || '',
+        night: timesArray[3] || '',
+      },
+    };
+
+    const existing = getAlarms();
+    existing.push(alarm);
+    setAlarms(existing);
+
+    showToast('Medicine alarm saved');
+    nameInput.value = '';
     renderAlarms();
-    checkAlarms();                // check once immediately
-    setInterval(checkAlarms, 30000); // then every 30 seconds
-  </script>
+  });
+
+  alarmListDiv.addEventListener('click', (e) => {
+    const btn = e.target.closest('.alarm-pill-delete');
+    if (!btn) return;
+
+    const id = btn.getAttribute('data-id');
+    let alarms = getAlarms();
+    alarms = alarms.filter((a) => String(a.id) !== String(id));
+    setAlarms(alarms);
+    renderAlarms();
+    showToast('Alarm deleted');
+  });
+
+  // only show list, no time checking here
+  renderAlarms();
+</script>
 </body>
 </html>
