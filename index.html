@@ -25,7 +25,7 @@
     /* MAIN APP CONTAINER */
     .app-frame {
       width: 100%;
-      max-width: 900px;          /* 👈 wide on desktop */
+      max-width: 900px;
       height: 92vh;
       background: #ffffff;
       border-radius: 28px;
@@ -62,6 +62,7 @@
       color: #1b73d1;
       cursor: pointer;
       user-select: none;
+      text-decoration: none;
     }
 
     .dot-menu {
@@ -105,18 +106,72 @@
       color: #3c5270;
     }
 
-    /* Chat area */
+    /* Chat / content area */
     .chat-area {
       flex: 1;
       background: #ffffff;
-      padding: 8px 14px;
+      padding: 8px 14px 0 14px;
       overflow-y: auto;
+    }
+
+    /* Alarm list inside chat area */
+    .alarm-list {
+      max-width: 640px;
+      margin: 8px auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .alarm-pill {
+      border-radius: 16px;
+      border: 1px solid #e3eefb;
+      background: #f8fcff;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .alarm-pill-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .alarm-pill-name {
+      font-weight: 600;
+      color: #1b3f7a;
+    }
+
+    .alarm-pill-times {
+      margin-top: 3px;
+      color: #65718a;
+    }
+
+    .alarm-pill-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e0f1ff;
+      color: #305c9b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .empty-state {
+      font-size: 13px;
+      color: #8a96aa;
+      text-align: center;
+      margin-top: 12px;
     }
 
     /* Bottom search bar */
     .bottom-bar {
       padding: 12px 16px 18px 16px;
       background: #ffffff;
+      display: flex;
+      justify-content: flex-end;
     }
 
     .search-box {
@@ -127,11 +182,9 @@
       align-items: center;
       gap: 8px;
       background: #f8fcff;
-    }
-
-    .search-icon {
-      font-size: 16px;
-      opacity: 0.8;
+      width: 70%;
+      max-width: 320px;
+      margin-left: auto;
     }
 
     .search-input {
@@ -147,10 +200,15 @@
       color: #9da7b8;
     }
 
-    /* 📱 MOBILE MODE – full screen, like real app */
+    .search-icon {
+      font-size: 16px;
+      opacity: 0.8;
+    }
+
+    /* MOBILE MODE */
     @media (max-width: 600px) {
       body {
-        background: #ffffff;   /* phone lo outside gap remove */
+        background: #ffffff;
         align-items: stretch;
       }
 
@@ -160,10 +218,6 @@
         border-radius: 0;
         box-shadow: none;
         border: none;
-      }
-
-      .top-bar {
-        padding-top: 10px;
       }
 
       .title-main {
@@ -178,9 +232,9 @@
     <div class="top-bar">
       <div class="top-row">
         <div class="top-row-left">
-          <a href= "alarm.html" class="plus-btn">+</a>
+          <!-- + button goes to alarm page -->
+          <a href="alarm.html" class="plus-btn">+</a>
         </div>
-
         <div class="top-row-right">
           <div class="dot-menu">
             <span></span>
@@ -196,52 +250,9 @@
       </div>
     </div>
 
-    <!-- Middle empty chat area -->
+    <!-- Middle chat / alarm list area -->
     <div class="chat-area">
-      <div class="alarm-list"> id="alarmlist"></div
-                     
-    <script>
-  const alarmListDiv = document.getElementById('alarmList');
-
-  function renderAlarms() {
-    if (!alarmListDiv) return;
-    const alarms = JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
-
-    if (!alarms.length) {
-      alarmListDiv.innerHTML =
-        '<div class="empty-state">No medicine alarms yet. Tap “+” to add one.</div>';
-      return;
-    }
-
-    const html = alarms
-      .map((alarm) => {
-        const name = alarm.medicine || 'Unnamed medicine';
-        const t = alarm.times || {};
-        const timesText = [
-          t.beforeBreakfast ? `BB: ${t.beforeBreakfast}` : '',
-          t.afterBreakfast ? `AB: ${t.afterBreakfast}` : '',
-          t.afternoon ? `Afternoon: ${t.afternoon}` : '',
-          t.night ? `Night: ${t.night}` : '',
-        ]
-          .filter(Boolean)
-          .join(' · ');
-
-        return `
-          <div class="alarm-pill">
-            <div class="alarm-pill-left">
-              <div class="alarm-pill-name">${name}</div>
-              <div class="alarm-pill-times">${timesText || 'No time set'}</div>
-            </div>
-            <div class="alarm-pill-tag">MEDICINE</div>
-          </div>
-        `;
-      })
-      .join('');
-
-    alarmListDiv.innerHTML = html;
-  }
-
-</script>                                            
+      <div class="alarm-list" id="alarmList"></div>
     </div>
 
     <!-- Bottom search bar -->
@@ -251,54 +262,56 @@
           class="search-input"
           type="text"
           placeholder="Ask Salus"
-           <span class="search-icon">🔍</span>
-  
+        />
+        <span class="search-icon">🔍</span>
       </div>
     </div>
-    <script>
-  const alarmListDiv = document.getElementById('alarmList');
+  </div>
 
-  function renderAlarms() {
-    if (!alarmListDiv) return;
+  <!-- Script to read alarms from localStorage and show them -->
+  <script>
+    const alarmListDiv = document.getElementById('alarmList');
 
-    const alarms = JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+    function renderAlarms() {
+      if (!alarmListDiv) return;
 
-    if (!alarms.length) {
-      alarmListDiv.innerHTML =
-        '<div class="empty-state">No medicine alarms yet. Tap “+” to add one.</div>';
-      return;
+      const alarms = JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+
+      if (!alarms.length) {
+        alarmListDiv.innerHTML =
+          '<div class="empty-state">No medicine alarms yet. Tap “+” to add one.</div>';
+        return;
+      }
+
+      const html = alarms
+        .map((alarm) => {
+          const name = alarm.medicine || 'Unnamed medicine';
+          const t = alarm.times || {};
+          const timesText = [
+            t.beforeBreakfast ? `BB: ${t.beforeBreakfast}` : '',
+            t.afterBreakfast ? `AB: ${t.afterBreakfast}` : '',
+            t.afternoon ? `Afternoon: ${t.afternoon}` : '',
+            t.night ? `Night: ${t.night}` : '',
+          ]
+            .filter(Boolean)
+            .join(' · ');
+
+          return `
+            <div class="alarm-pill">
+              <div class="alarm-pill-left">
+                <div class="alarm-pill-name">${name}</div>
+                <div class="alarm-pill-times">${timesText || 'No time set'}</div>
+              </div>
+              <div class="alarm-pill-tag">MEDICINE</div>
+            </div>
+          `;
+        })
+        .join('');
+
+      alarmListDiv.innerHTML = html;
     }
 
-    const html = alarms
-      .map((alarm) => {
-        const name = alarm.medicine || 'Unnamed medicine';
-        const t = alarm.times || {};
-        const timesText = [
-          t.beforeBreakfast ? `BB: ${t.beforeBreakfast}` : '',
-          t.afterBreakfast ? `AB: ${t.afterBreakfast}` : '',
-          t.afternoon ? `Afternoon: ${t.afternoon}` : '',
-          t.night ? `Night: ${t.night}` : '',
-        ]
-          .filter(Boolean)
-          .join(' · ');
-
-        return `
-          <div class="alarm-pill">
-            <div class="alarm-pill-left">
-              <div class="alarm-pill-name">${name}</div>
-              <div class="alarm-pill-times">${timesText || 'No time set'}</div>
-            </div>
-            <div class="alarm-pill-tag">MEDICINE</div>
-          </div>
-        `;
-      })
-      .join('');
-
-    alarmListDiv.innerHTML = html;
-  }
-
-  renderAlarms();
-</script>
-  </div>
+    renderAlarms();
+  </script>
 </body>
 </html>
