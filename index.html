@@ -302,7 +302,7 @@
     </div>
   </div>
 <button id="testSoundBtn" style="margin: 8px auto 16px auto; display:block; font-size:12px;">
-  Test alarm sound
+
 </button>
   
   <!-- Script to read alarms from localStorage and show them -->
@@ -315,7 +315,16 @@
   // alarm sound
  const alarmSound = new Audio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3');
   alarmSound.loop = true;
-  
+    
+  // 🔊 Test button – click to check if sound works at all
+const testSoundBtn = document.getElementById('testSoundBtn');
+if (testSoundBtn) {
+  testSoundBtn.addEventListener('click', () => {
+    alarmSound.currentTime = 0;
+    alarmSound.play().catch(() => {});
+  });
+}
+
   // keep track of alarms that already rang today (in memory only)
   const triggeredToday = {};
 
