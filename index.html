@@ -206,43 +206,32 @@
     }
 /* Alarm ringing toast on home page */
 .alarm-toast {
-  position: absolute;
+  position: fixed;
+  bottom: 18px;
   left: 50%;
-  bottom: 90px;
-  transform: translateX(-50%) translateY(20px);
-  background: #1b3f7a;
+  transform: translateX(-50%);
+  background: #0f4f96;
   color: #ffffff;
-  padding: 10px 16px;
-  border-radius: 999px;
-  font-size: 13px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.2);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  display: flex;
+  padding: 14px 20px;
+  border-radius: 20px;
+  display: none;
   align-items: center;
-  gap: 10px;
-}
-
-.alarm-toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-  pointer-events: auto;
+  gap: 12px;
+  z-index: 9999;
 }
 
 .alarm-toast-icon {
-  font-size: 16px;
+  font-size: 22px;
 }
 
 .alarm-toast-stop {
+  background: #ffffff22;
+  color: white;
   border: none;
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 12px;
-  background: #ffb3b3;
-  color: #7a1010;
+  padding: 6px 14px;
+  border-radius: 12px;
   cursor: pointer;
-}
+} 
     /* MOBILE MODE */
     @media (max-width: 600px) {
       body {
@@ -320,9 +309,12 @@
   const alarmToastText = document.getElementById('alarmToastText');
   const alarmToastStop = document.getElementById('alarmToastStop');
 
-  // sound from web
+  // alarm sound
   const alarmSound = new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
-  let isRinging = false;
+  alarmSound.loop = true;
+
+  // memory of what already rang today (no localStorage)
+  const triggeredToday = {};
 
   function getAlarms() {
     try {
@@ -343,55 +335,47 @@
       return;
     }
 
-    const html = alarms
-      .map((alarm) => {
-        const name = alarm.medicine || 'Unnamed medicine';
-        const t = alarm.times || {};
-        const timesText = [
-          t.beforeBreakfast ? `BB: ${t.beforeBreakfast}` : '',
-          t.afterBreakfast ? `AB: ${t.afterBreakfast}` : '',
-          t.afternoon ? `Afternoon: ${t.afternoon}` : '',
-          t.night ? `Night: ${t.night}` : '',
-        ]
-          .filter(Boolean)
-          .join(' · ');
+    let html = '';
+    alarms.forEach((alarm) => {
+      const name = alarm.medicine || 'Unnamed medicine';
+      const t = alarm.times || {};
+      const parts = [];
+      if (t.beforeBreakfast) parts.push('BB: ' + t.beforeBreakfast);
+      if (t.afterBreakfast) parts.push('AB: ' + t.afterBreakfast);
+      if (t.afternoon) parts.push('Afternoon: ' + t.afternoon);
+      if (t.night) parts.push('Night: ' + t.night);
+      const timesText = parts.join(' · ') || 'No time set';
 
-        return `
-          <div class="alarm-pill">
-            <div class="alarm-pill-left">
-              <div class="alarm-pill-name">${name}</div>
-              <div class="alarm-pill-times">${timesText || 'No time set'}</div>
-            </div>
-            <div class="alarm-pill-tag">MEDICINE</div>
+      html += `
+        <div class="alarm-pill">
+          <div class="alarm-pill-left">
+            <div class="alarm-pill-name">${name}</div>
+            <div class="alarm-pill-times">${timesText}</div>
           </div>
-        `;
-      })
-      .join('');
+          <div class="alarm-pill-tag">MEDICINE</div>
+        </div>
+      `;
+    });
 
     alarmListDiv.innerHTML = html;
   }
 
-  function startRinging(message) {
+  function showAlarm(message) {
     if (!alarmToast) return;
     alarmToastText.textContent = message;
     alarmToast.style.display = 'flex';
-    isRinging = true;
-    alarmSound.loop = true;
-    alarmSound.play().catch(() => {
-      // browser blocked auto play until first click
-    });
+    // sound may need a user click once on page to allow audio
+    alarmSound.play().catch(() => {});
   }
 
-  function stopRinging() {
-    if (!isRinging) return;
-    isRinging = false;
+  function stopAlarm() {
     alarmToast.style.display = 'none';
     alarmSound.pause();
     alarmSound.currentTime = 0;
   }
 
   if (alarmToastStop) {
-    alarmToastStop.addEventListener('click', stopRinging);
+    alarmToastStop.addEventListener('click', stopAlarm);
   }
 
   function checkAlarms() {
@@ -402,16 +386,11 @@
     const hh = String(now.getHours()).padStart(2, '0');
     const mm = String(now.getMinutes()).padStart(2, '0');
     const nowHM = `${hh}:${mm}`;
-    const today = now.toISOString().slice(0, 10);
-
-    let triggered =
-      JSON.parse(localStorage.getItem('sanitas_alarm_last_trigger') || '[]');
-
-    let changed = false;
+    const dateKey = now.toISOString().slice(0, 10); // YYYY-MM-DD
 
     alarms.forEach((alarm) => {
-      const t = alarm.times || {};
       const name = alarm.medicine || 'medicine';
+      const t = alarm.times || {};
 
       const slots = [
         ['beforeBreakfast', 'Before breakfast'],
@@ -420,43 +399,26 @@
         ['night', 'Night'],
       ];
 
-      slots.forEach(([key, label]) => {
-        const time = t[key];
+      slots.forEach(([slotKey, label]) => {
+        const time = t[slotKey];
         if (!time) return;
         if (time === nowHM) {
-          const already = triggered.some(
-            (x) =>
-              x.id === alarm.id &&
-              x.time === time &&
-              x.date === today &&
-              x.slot === key
-          );
-          if (!already) {
-            startRinging(`Time for ${name} (${label})`);
-            triggered.push({
-              id: alarm.id,
-              time,
-              date: today,
-              slot: key,
-            });
-            changed = true;
+          const key = `${dateKey}-${alarm.id}-${slotKey}`;
+          if (!triggeredToday[key]) {
+            triggeredToday[key] = true;
+            showAlarm(`Time for ${name} (${label})`);
           }
         }
       });
     });
-
-    if (changed) {
-      localStorage.setItem(
-        'sanitas_alarm_last_trigger',
-        JSON.stringify(triggered)
-      );
-    }
   }
 
-  // initial
+  // initial render + start checking
   renderAlarms();
   checkAlarms();
-  setInterval(checkAlarms, 30000);
+  // check every second so we never miss the minute
+  setInterval(checkAlarms, 1000);
 </script>
+  
 </body>
 </html>
