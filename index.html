@@ -371,16 +371,23 @@ if (testSoundBtn) {
 
     alarmListDiv.innerHTML = html;
   }
-
-  function showAlarm(message) {
-    if (!alarmToast) return;
+function showAlarm(message) {
+  // 1) Show banner if element exists
+  if (alarmToast && alarmToastText) {
     alarmToastText.textContent = message;
     alarmToast.style.display = 'flex';
-    alarmSound.play().catch(() => {
-      // browser blocked autoplay until user interacts once
-    });
   }
 
+  // 2) Play sound
+  alarmSound.play().catch(() => {
+    // ignore if autoplay blocked
+  });
+
+  // 3) Extra popup on small screens (phone backup)
+  if (window.innerWidth < 700) {
+    alert(message);
+  }
+}
   function stopAlarm() {
     alarmToast.style.display = 'none';
     alarmSound.pause();
