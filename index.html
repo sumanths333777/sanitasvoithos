@@ -312,6 +312,25 @@
   // alarm sound
   const alarmSound = new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
   alarmSound.loop = true;
+  // 🔓 Unlock sound on first tap (needed on phone)
+document.addEventListener(
+  'click',
+  function enableSoundOnce() {
+    alarmSound
+      .play()
+      .then(() => {
+        alarmSound.pause();
+        alarmSound.currentTime = 0;
+      })
+      .catch(() => {
+        // ignore if blocked
+      });
+
+    // run only once
+    document.removeEventListener('click', enableSoundOnce);
+  },
+  { once: true }
+);
 
   // memory of what already rang today (no localStorage)
   const triggeredToday = {};
