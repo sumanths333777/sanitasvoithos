@@ -350,6 +350,81 @@
         max-width: 100%;
       }
     }
+    .profile-edit-btn {
+  margin-top: 8px;
+  border: none;
+  background: #1b73d1;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.profile-edit-card {
+  border-radius: 16px;
+  border: 1px solid #d6e5fb;
+  background: #f8fcff;
+  padding: 12px 14px 12px 14px;
+  margin-bottom: 16px;
+  display: none; /* hidden until Edit pressed */
+}
+
+.profile-edit-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.profile-edit-row label {
+  font-size: 12px;
+  color: #4a5770;
+  margin-bottom: 4px;
+}
+
+.profile-edit-row input[type="text"] {
+  border: 1px solid #c7d8f5;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 13px;
+  outline: none;
+}
+
+.profile-edit-row input[type="file"] {
+  font-size: 12px;
+}
+
+.profile-edit-hint {
+  font-size: 11px;
+  color: #7c8698;
+  margin-top: 2px;
+}
+
+.profile-edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.profile-edit-save,
+.profile-edit-cancel {
+  flex: 1;
+  border-radius: 999px;
+  padding: 8px 0;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+}
+
+.profile-edit-save {
+  background: #1b73d1;
+  color: #ffffff;
+}
+
+.profile-edit-cancel {
+  background: #e3eefb;
+  color: #123f70;
+}
+    
   </style>
 </head>
 <body>
@@ -458,36 +533,116 @@
   </div>
   
 <script>
-  // dummy alarms just to show UI – later we will use real data
+  <script>
+  // ===== PROFILE DATA (stored in localStorage) =====
+  const PROFILE_KEY = "sanitas_profile";
+
+  function loadProfile() {
+    try {
+      return JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}");
+    } catch (e) {
+      return {};
+    }
+  }
+
+  let profile = loadProfile();
+  if (!profile.name) profile.name = "Sanitas User";
+
+  function saveProfileToStorage() {
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  }
+
+  function updateProfileUI() {
+    const avatar = document.getElementById("profileAvatar");
+    const nameEl = document.getElementById("profileName");
+
+    if (!avatar || !nameEl) return;
+
+    // name
+    nameEl.textContent = profile.name || "Sanitas User";
+
+    // avatar
+    if (profile.avatarDataUrl) {
+      avatar.style.backgroundImage = `url(${profile.avatarDataUrl})`;
+      avatar.style.backgroundSize = "cover";
+      avatar.style.backgroundPosition = "center";
+      avatar.textContent = ""; // no letter text
+    } else {
+      avatar.style.backgroundImage = "none";
+      const initial =
+        (profile.name || "Sanitas User").trim().charAt(0).toUpperCase() || "S";
+      avatar.textContent = initial;
+    }
+  }
+
+  function openProfileEdit() {
+    const card = document.getElementById("profileEditCard");
+    const input = document.getElementById("profileNameInput");
+    if (card) card.style.display = "block";
+    if (input) input.value = profile.name || "";
+  }
+
+  function cancelProfileEdit() {
+    const card = document.getElementById("profileEditCard");
+    if (card) card.style.display = "none";
+  }
+
+  function saveProfileEdit() {
+    const nameInput = document.getElementById("profileNameInput");
+    if (nameInput) {
+      const newName = nameInput.value.trim();
+      if (newName) profile.name = newName;
+    }
+    saveProfileToStorage();
+    updateProfileUI();
+    cancelProfileEdit();
+  }
+
+  // handle photo upload
+  const photoInput = document.getElementById("profilePhotoInput");
+  if (photoInput) {
+    photoInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        profile.avatarDataUrl = reader.result;
+        saveProfileToStorage();
+        updateProfileUI();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ===== DUMMY ALARMS (just to show UI for now) =====
   const dummyAlarms = [
     {
       patient: "Dad",
       medicine: "Metformin 500mg",
-      times: "BB: 08:00 · Night: 21:00"
+      times: "BB: 08:00 · Night: 21:00",
     },
     {
       patient: "Mom",
       medicine: "BP Tablet",
-      times: "AB: 09:30"
-    }
+      times: "AB: 09:30",
+    },
   ];
 
   function openProfilePanel() {
-    const panel = document.getElementById('profilePanel');
-    const listDiv = document.getElementById('profileAlarmList');
-    const emptyText = document.getElementById('profileEmptyText');
+    const panel = document.getElementById("profilePanel");
+    const listDiv = document.getElementById("profileAlarmList");
+    const emptyText = document.getElementById("profileEmptyText");
 
-    // render dummy alarms for now
+    // render alarms (dummy for now)
     if (dummyAlarms.length === 0) {
       listDiv.innerHTML = "";
       emptyText.textContent = "No medicine alarms yet.";
     } else {
       emptyText.textContent = "";
       let html = "";
-      dummyAlarms.forEach(a => {
-        const name = a.patient
-          ? `${a.patient} – ${a.medicine}`
-          : a.medicine;
+      dummyAlarms.forEach((a) => {
+        const name = a.patient ? `${a.patient} – ${a.medicine}` : a.medicine;
         html += `
           <div class="profile-alarm-pill">
             <div class="profile-alarm-left">
@@ -501,15 +656,15 @@
       listDiv.innerHTML = html;
     }
 
-    if (panel) panel.classList.add('open');
+    if (panel) panel.classList.add("open");
   }
 
   function closeProfilePanel() {
-    const panel = document.getElementById('profilePanel');
-    if (panel) panel.classList.remove('open');
+    const panel = document.getElementById("profilePanel");
+    if (panel) panel.classList.remove("open");
   }
 
-  // ========== SWIPE GESTURES ==========
+  // ===== SWIPE GESTURES (open/close profile panel) =====
   let touchStartX = null;
 
   // open panel: swipe from LEFT edge → right
@@ -529,7 +684,6 @@
       const t = e.changedTouches[0];
       const dx = t.clientX - touchStartX;
 
-      // started near left edge + moved right enough
       if (touchStartX < 30 && dx > 60) {
         openProfilePanel();
       }
@@ -557,7 +711,6 @@
       const t = e.changedTouches[0];
       const dx = t.clientX - touchStartX;
 
-      // swipe left
       if (dx < -60) {
         closeProfilePanel();
       }
@@ -565,6 +718,10 @@
     },
     { passive: true }
   );
+
+  // ===== INITIALIZE =====
+  updateProfileUI();
+  
 </script>
 
 </body>
