@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- SANITAS font -->
-<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     * {
       box-sizing: border-box;
@@ -36,7 +37,7 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      margin: 0 auto; /* center in wide screens */
+      margin: 0 auto;
     }
 
     /* Top header bar */
@@ -85,40 +86,36 @@
       background: #1b73d1;
       display: block;
     }
-/* === SANITAS VOITHOS HEADING – MATCH MOCKUP === */
 
-/* Light blue band behind the text */
-.title-band {
-  background: #d8ecff;              /* soft blue like image */
-  border-radius: 16px;
-  padding: 26px 0 30px 0;           /* top / bottom spacing */
-  width: 100%;
-  margin: 0 auto 16px auto;
-  text-align: center;
-}
+    /* === SANITAS VOITHOS HEADING – MATCH MOCKUP === */
+    .title-band {
+      background: #d8ecff;
+      border-radius: 16px;
+      padding: 26px 0 30px 0;
+      width: 100%;
+      margin: 0 auto 16px auto;
+      text-align: center;
+    }
 
-/* "SANITAS" */
-.title-main {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont,
-               "SF Pro Display", "Segoe UI", sans-serif;
-  font-weight: 800;                 /* very bold */
-  font-size: 40px;                  /* big but not too fat */
-  letter-spacing: 0.10em;           /* spaced like mockup */
-  color: #0c3f7f;                   /* deep navy blue */
-  text-transform: uppercase;
-}
+    .title-main {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                   "SF Pro Display", "Segoe UI", sans-serif;
+      font-weight: 800;
+      font-size: 40px;
+      letter-spacing: 0.10em;
+      color: #0c3f7f;
+      text-transform: uppercase;
+    }
 
-/* "Voithos" */
-.title-sub {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont,
-               "SF Pro Display", "Segoe UI", sans-serif;
-  font-weight: 500;                 /* medium */
-  font-size: 20px;
-  color: #123f70;
-  margin-top: 6px;
-}
+    .title-sub {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                   "SF Pro Display", "Segoe UI", sans-serif;
+      font-weight: 500;
+      font-size: 20px;
+      color: #123f70;
+      margin-top: 6px;
+    }
 
-  
     /* Chat / content area */
     .chat-area {
       flex: 1;
@@ -127,10 +124,61 @@
       overflow-y: auto;
     }
 
-    /* Alarm list inside chat area */
+    /* ======= 6 ICON GRID ======= */
+    .home-grid-wrapper {
+      max-width: 640px;
+      margin: 4px auto 10px auto;
+    }
+
+    .grid-6 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .feature-card {
+      height: 92px;
+      border-radius: 18px;
+      border: 2px solid #88c6ff;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+    }
+
+    .feature-card:active {
+      transform: scale(0.97);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+    }
+
+    .icon-small {
+      width: 26px;
+      height: 26px;
+      margin-bottom: 6px;
+    }
+
+    .feature-label {
+      font-size: 12px;
+      color: #003366;
+    }
+
+    /* Section heading above alarms */
+    .section-heading {
+      max-width: 640px;
+      margin: 12px auto 4px auto;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #7c8698;
+    }
+
+    /* Alarm list */
     .alarm-list {
       max-width: 640px;
-      margin: 8px auto 0 auto;
+      margin: 4px auto 0 auto;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -198,6 +246,7 @@
       width: 100%;
       max-width: 520px;
       margin: 0 auto;
+      cursor: pointer; /* whole bar clickable */
     }
 
     .search-input {
@@ -207,6 +256,7 @@
       width: 100%;
       font-size: 14px;
       color: #444;
+      pointer-events: none; /* tap goes to AI page */
     }
 
     .search-input::placeholder {
@@ -274,7 +324,7 @@
     <div class="top-bar">
       <div class="top-row">
         <div class="top-row-left">
-          <!-- + button goes to alarm page -->
+          <!-- you can change this later if you want -->
           <a href="alarm.html" class="plus-btn">+</a>
         </div>
         <div class="top-row-right">
@@ -300,25 +350,63 @@
       </div>
     </div>
 
-    <!-- Middle chat / alarm list area -->
+    <!-- Middle content area -->
     <div class="chat-area">
+
+      <!-- 6 ICON GRID -->
+      <div class="home-grid-wrapper">
+        <div class="grid-6">
+          <div class="feature-card" onclick="goToPage('alarm.html')">
+            <img src="icons/alarm.svg" class="icon-small" alt="Alarm" />
+            <div class="feature-label">Alarm</div>
+          </div>
+
+          <div class="feature-card" onclick="goToPage('tongue.html')">
+            <img src="icons/tongue.svg" class="icon-small" alt="Tongue" />
+            <div class="feature-label">Tongue</div>
+          </div>
+
+          <div class="feature-card" onclick="goToPage('face.html')">
+            <img src="icons/face.svg" class="icon-small" alt="Face" />
+            <div class="feature-label">Face</div>
+          </div>
+
+          <div class="feature-card" onclick="goToPage('tips.html')">
+            <img src="icons/tips.svg" class="icon-small" alt="Healthy Tips" />
+            <div class="feature-label">Healthy Tips</div>
+          </div>
+
+          <div class="feature-card" onclick="goToPage('files.html')">
+            <img src="icons/files.svg" class="icon-small" alt="Saved Files" />
+            <div class="feature-label">Saved Files</div>
+          </div>
+
+          <div class="feature-card" onclick="goToPage('ocr.html')">
+            <img src="icons/ocr.svg" class="icon-small" alt="OCR" />
+            <div class="feature-label">OCR</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alarms title + list -->
+      <div class="section-heading">Medicine alarms</div>
       <div class="alarm-list" id="alarmList"></div>
     </div>
 
     <!-- Bottom search bar -->
     <div class="bottom-bar">
-      <div class="search-box">
+      <div class="search-box" onclick="goToAI()">
         <input
           class="search-input"
           type="text"
-          placeholder="Ask Salus"
+          placeholder="Search / Ask AI"
         />
         <span class="search-icon">🔍</span>
       </div>
     </div>
   </div>
 
-  <!-- Script to read alarms from localStorage and show them -->
+  <!-- Script -->
   <script>
     const alarmListDiv = document.getElementById('alarmList');
     const alarmToast = document.getElementById('alarmToast');
@@ -377,18 +465,15 @@
     }
 
     function showAlarm(message) {
-      // 1) Show banner if element exists
       if (alarmToast && alarmToastText) {
         alarmToastText.textContent = message;
         alarmToast.style.display = 'flex';
       }
 
-      // 2) Play sound
       alarmSound.play().catch(() => {
         // ignore if autoplay blocked
       });
 
-      // 3) Extra popup on small screens (phone backup)
       if (window.innerWidth < 700) {
         alert(message);
       }
@@ -437,6 +522,16 @@
           }
         });
       });
+    }
+
+    // navigation helpers
+    function goToPage(page) {
+      window.location.href = page;
+    }
+
+    function goToAI() {
+      // when you build AI page, name it ai.html
+      window.location.href = 'ai.html';
     }
 
     // initial render + start checking every second
