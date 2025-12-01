@@ -60,15 +60,14 @@
       gap: 6px;
     }
 
-    .plus-btn {
-      font-size: 24px;
-      font-weight: 600;
-      color: #1b73d1;
-      cursor: pointer;
-      user-select: none;
-      text-decoration: none;
-    }
-
+.plus-btn {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1b73d1;
+  cursor: default;      /* not clickable */
+  user-select: none;
+  text-decoration: none;
+}
     .dot-menu {
       width: 4px;
       height: 18px;
@@ -330,7 +329,7 @@
       <div class="top-row">
         <div class="top-row-left">
           <!-- you can change this later if you want -->
-          <a href="alarm.html" class="plus-btn">+</a>
+      <span class="plus-button">+</span>
         </div>
         <div class="top-row-right">
           <div class="dot-menu">
