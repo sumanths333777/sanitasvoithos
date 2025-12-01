@@ -227,13 +227,18 @@
       margin-top: 12px;
     }
 
-    /* Bottom search bar */
-    .bottom-bar {
-      padding: 12px 16px 18px 16px;
-      background: #ffffff;
-      display: flex;
-      justify-content: center;
-    }
+.bottom-bar {
+  padding: 12px 16px;
+  background: #ffffff;
+  position: fixed;        /* 👈 keeps it stuck at bottom */
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 900px;       /* same width as your app-frame */
+  border-top: 1px solid #e3eefb;
+  z-index: 999;
+}
 
     .search-box {
       border-radius: 999px;
