@@ -433,3 +433,271 @@
           <span></span><span></span><span></span>
         </div>
       </div>
+
+      <div class="title-band">
+        <div class="title-main">SANITAS</div>
+        <div class="title-sub">Voithos</div>
+      </div>
+    </div>
+
+    <!-- Home content -->
+    <div class="chat-area">
+      <div class="home-grid-wrapper">
+        <div class="grid-6">
+          <div class="feature-card" onclick="window.location.href='alarm.html'">
+            <img src="icons/alarm.svg" class="icon-small" alt="Alarm" />
+            <div class="feature-label">Alarm</div>
+          </div>
+
+          <div class="feature-card">
+            <img src="icons/tongue.svg" class="icon-small" alt="Tongue" />
+            <div class="feature-label">Tongue</div>
+          </div>
+
+          <div class="feature-card">
+            <img src="icons/face.svg" class="icon-small" alt="Face" />
+            <div class="feature-label">Face</div>
+          </div>
+
+          <div class="feature-card">
+            <img src="icons/tips.svg" class="icon-small" alt="Healthy Tips" />
+            <div class="feature-label">Healthy Tips</div>
+          </div>
+
+          <div class="feature-card">
+            <img src="icons/files.svg" class="icon-small" alt="Saved Files" />
+            <div class="feature-label">Saved Files</div>
+          </div>
+
+          <div class="feature-card">
+            <img src="icons/ocr.svg" class="icon-small" alt="OCR" />
+            <div class="feature-label">OCR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom search bar -->
+    <div class="bottom-bar">
+      <div class="search-box">
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Search / Ask AI"
+        />
+        <span class="search-icon">🔍</span>
+      </div>
+    </div>
+
+    <!-- PROFILE SLIDE PANEL -->
+    <div class="profile-panel" id="profilePanel">
+      <div class="profile-header">
+        <span class="profile-title">Profile & Alarms</span>
+        <button class="profile-close" onclick="closeProfilePanel()">✕</button>
+      </div>
+
+      <div class="profile-content">
+        <div class="profile-user">
+          <div class="profile-avatar" id="profileAvatar">S</div>
+          <div class="profile-name" id="profileName">Sanitas User</div>
+          <button class="profile-edit-btn" onclick="openProfileEdit()">Edit profile</button>
+        </div>
+
+        <div class="profile-edit-card" id="profileEditCard">
+          <div class="profile-edit-row">
+            <label for="profileNameInput">Name</label>
+            <input id="profileNameInput" type="text" placeholder="Enter your name" />
+          </div>
+
+          <div class="profile-edit-row">
+            <label for="profilePhotoInput">Photo</label>
+            <input id="profilePhotoInput" type="file" accept="image/*" />
+          </div>
+
+          <div class="profile-edit-actions">
+            <button type="button" class="profile-edit-save" onclick="saveProfileEdit()">Save</button>
+            <button type="button" class="profile-edit-cancel" onclick="cancelProfileEdit()">Cancel</button>
+          </div>
+        </div>
+
+        <div class="profile-section-label">Saved alarms</div>
+        <div id="profileAlarmList" class="profile-alarm-list"></div>
+        <div id="profileEmptyText" class="profile-empty"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== PROFILE DATA =====
+    const PROFILE_KEY = "sanitas_profile";
+
+    function loadProfile() {
+      try {
+        return JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}");
+      } catch (e) {
+        return {};
+      }
+    }
+
+    let profile = loadProfile();
+    if (!profile.name) profile.name = "Sanitas User";
+
+    function saveProfileToStorage() {
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+    }
+
+    function updateProfileUI() {
+      const avatar = document.getElementById("profileAvatar");
+      const nameEl = document.getElementById("profileName");
+      if (!avatar || !nameEl) return;
+
+      nameEl.textContent = profile.name || "Sanitas User";
+
+      if (profile.avatarDataUrl) {
+        avatar.style.backgroundImage = `url(${profile.avatarDataUrl})`;
+        avatar.style.backgroundSize = "cover";
+        avatar.style.backgroundPosition = "center";
+        avatar.textContent = "";
+      } else {
+        avatar.style.backgroundImage = "none";
+        const initial =
+          (profile.name || "Sanitas User").trim().charAt(0).toUpperCase() || "S";
+        avatar.textContent = initial;
+      }
+    }
+
+    function openProfileEdit() {
+      const card = document.getElementById("profileEditCard");
+      const input = document.getElementById("profileNameInput");
+      if (card) card.style.display = "block";
+      if (input) input.value = profile.name || "";
+    }
+
+    function cancelProfileEdit() {
+      const card = document.getElementById("profileEditCard");
+      if (card) card.style.display = "none";
+    }
+
+    function saveProfileEdit() {
+      const nameInput = document.getElementById("profileNameInput");
+      if (nameInput) {
+        const newName = nameInput.value.trim();
+        if (newName) profile.name = newName;
+      }
+      saveProfileToStorage();
+      updateProfileUI();
+      cancelProfileEdit();
+    }
+
+    const photoInput = document.getElementById("profilePhotoInput");
+    if (photoInput) {
+      photoInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          profile.avatarDataUrl = reader.result;
+          saveProfileToStorage();
+          updateProfileUI();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ===== DUMMY ALARMS (for now) =====
+    const dummyAlarms = [
+      { patient: "Dad", medicine: "Metformin 500mg", times: "BB: 08:00 · Night: 21:00" },
+      { patient: "Mom", medicine: "BP Tablet", times: "AB: 09:30" },
+    ];
+
+    function openProfilePanel() {
+      const panel = document.getElementById("profilePanel");
+      const listDiv = document.getElementById("profileAlarmList");
+      const emptyText = document.getElementById("profileEmptyText");
+
+      if (dummyAlarms.length === 0) {
+        listDiv.innerHTML = "";
+        emptyText.textContent = "No medicine alarms yet.";
+      } else {
+        emptyText.textContent = "";
+        let html = "";
+        dummyAlarms.forEach((a) => {
+          const name = a.patient ? `${a.patient} – ${a.medicine}` : a.medicine;
+          html += `
+            <div class="profile-alarm-pill">
+              <div class="profile-alarm-left">
+                <div class="profile-alarm-name">${name}</div>
+                <div class="profile-alarm-times">${a.times}</div>
+              </div>
+              <div class="profile-alarm-tag">MEDICINE</div>
+            </div>
+          `;
+        });
+        listDiv.innerHTML = html;
+      }
+
+      if (panel) panel.classList.add("open");
+    }
+
+    function closeProfilePanel() {
+      const panel = document.getElementById("profilePanel");
+      if (panel) panel.classList.remove("open");
+    }
+
+    // ===== SWIPE GESTURES =====
+    let touchStartX = null;
+
+    document.addEventListener(
+      "touchstart",
+      (e) => {
+        const t = e.touches[0];
+        touchStartX = t.clientX;
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      "touchend",
+      (e) => {
+        if (touchStartX === null) return;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - touchStartX;
+        if (touchStartX < 30 && dx > 60) {
+          openProfilePanel();
+        }
+        touchStartX = null;
+      },
+      { passive: true }
+    );
+
+    const profilePanel = document.getElementById("profilePanel");
+    if (profilePanel) {
+      profilePanel.addEventListener(
+        "touchstart",
+        (e) => {
+          const t = e.touches[0];
+          touchStartX = t.clientX;
+        },
+        { passive: true }
+      );
+
+      profilePanel.addEventListener(
+        "touchend",
+        (e) => {
+          if (touchStartX === null) return;
+          const t = e.changedTouches[0];
+          const dx = t.clientX - touchStartX;
+          if (dx < -60) {
+            closeProfilePanel();
+          }
+          touchStartX = null;
+        },
+        { passive: true }
+      );
+    }
+
+    // init
+    updateProfileUI();
+  </script>
+</body>
+</html>
