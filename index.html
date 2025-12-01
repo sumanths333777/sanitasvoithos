@@ -437,58 +437,116 @@
       </div>
     </div>
   </div>
+  
+<script>
+  // dummy alarms just to show UI – later we will use real data
+  const dummyAlarms = [
+    {
+      patient: "Dad",
+      medicine: "Metformin 500mg",
+      times: "BB: 08:00 · Night: 21:00"
+    },
+    {
+      patient: "Mom",
+      medicine: "BP Tablet",
+      times: "AB: 09:30"
+    }
+  ];
 
-  <script>
-    // dummy alarms just to show UI – later we will use real data
-    const dummyAlarms = [
-      {
-        patient: "Dad",
-        medicine: "Metformin 500mg",
-        times: "BB: 08:00 · Night: 21:00"
-      },
-      {
-        patient: "Mom",
-        medicine: "BP Tablet",
-        times: "AB: 09:30"
-      }
-    ];
+  function openProfilePanel() {
+    const panel = document.getElementById('profilePanel');
+    const listDiv = document.getElementById('profileAlarmList');
+    const emptyText = document.getElementById('profileEmptyText');
 
-    function openProfilePanel() {
-      const panel = document.getElementById('profilePanel');
-      const listDiv = document.getElementById('profileAlarmList');
-      const emptyText = document.getElementById('profileEmptyText');
-
-      // render dummy alarms for now
-      if (dummyAlarms.length === 0) {
-        listDiv.innerHTML = "";
-        emptyText.textContent = "No medicine alarms yet.";
-      } else {
-        emptyText.textContent = "";
-        let html = "";
-        dummyAlarms.forEach(a => {
-          const name = a.patient
-            ? `${a.patient} – ${a.medicine}`
-            : a.medicine;
-          html += `
-            <div class="profile-alarm-pill">
-              <div class="profile-alarm-left">
-                <div class="profile-alarm-name">${name}</div>
-                <div class="profile-alarm-times">${a.times}</div>
-              </div>
-              <div class="profile-alarm-tag">MEDICINE</div>
+    // render dummy alarms for now
+    if (dummyAlarms.length === 0) {
+      listDiv.innerHTML = "";
+      emptyText.textContent = "No medicine alarms yet.";
+    } else {
+      emptyText.textContent = "";
+      let html = "";
+      dummyAlarms.forEach(a => {
+        const name = a.patient
+          ? `${a.patient} – ${a.medicine}`
+          : a.medicine;
+        html += `
+          <div class="profile-alarm-pill">
+            <div class="profile-alarm-left">
+              <div class="profile-alarm-name">${name}</div>
+              <div class="profile-alarm-times">${a.times}</div>
             </div>
-          `;
-        });
-        listDiv.innerHTML = html;
+            <div class="profile-alarm-tag">MEDICINE</div>
+          </div>
+        `;
+      });
+      listDiv.innerHTML = html;
+    }
+
+    if (panel) panel.classList.add('open');
+  }
+
+  function closeProfilePanel() {
+    const panel = document.getElementById('profilePanel');
+    if (panel) panel.classList.remove('open');
+  }
+
+  // ========== SWIPE GESTURES ==========
+  let touchStartX = null;
+
+  // open panel: swipe from LEFT edge → right
+  document.addEventListener(
+    "touchstart",
+    (e) => {
+      const t = e.touches[0];
+      touchStartX = t.clientX;
+    },
+    { passive: true }
+  );
+
+  document.addEventListener(
+    "touchend",
+    (e) => {
+      if (touchStartX === null) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStartX;
+
+      // started near left edge + moved right enough
+      if (touchStartX < 30 && dx > 60) {
+        openProfilePanel();
       }
+      touchStartX = null;
+    },
+    { passive: true }
+  );
 
-      if (panel) panel.classList.add('open');
-    }
+  // close panel: swipe LEFT inside the panel
+  const profilePanel = document.getElementById("profilePanel");
 
-    function closeProfilePanel() {
-      const panel = document.getElementById('profilePanel');
-      if (panel) panel.classList.remove('open');
-    }
-  </script>
+  profilePanel.addEventListener(
+    "touchstart",
+    (e) => {
+      const t = e.touches[0];
+      touchStartX = t.clientX;
+    },
+    { passive: true }
+  );
+
+  profilePanel.addEventListener(
+    "touchend",
+    (e) => {
+      if (touchStartX === null) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStartX;
+
+      // swipe left
+      if (dx < -60) {
+        closeProfilePanel();
+      }
+      touchStartX = null;
+    },
+    { passive: true }
+  );
+</script>
+
 </body>
 </html>
