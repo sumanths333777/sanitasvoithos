@@ -417,7 +417,34 @@
         <span class="search-icon">🔍</span>
       </div>
     </div>
+<div class="profile-user">
+  <div class="profile-avatar" id="profileAvatar">S</div>
+  <div class="profile-name" id="profileName">Sanitas User</div>
+  <button class="profile-edit-btn" onclick="openProfileEdit()">Edit profile</button>
+</div>
 
+<!-- small card to edit name + photo -->
+<div class="profile-edit-card" id="profileEditCard">
+  <div class="profile-edit-row">
+    <label for="profileNameInput">Name</label>
+    <input id="profileNameInput" type="text" placeholder="Enter your name" />
+  </div>
+
+  <div class="profile-edit-row">
+    <label for="profilePhotoInput">Photo</label>
+    <input id="profilePhotoInput" type="file" accept="image/*" />
+    <small class="profile-edit-hint">Square photo looks best. Optional.</small>
+  </div>
+
+  <div class="profile-edit-actions">
+    <button type="button" class="profile-edit-save" onclick="saveProfileEdit()">Save</button>
+    <button type="button" class="profile-edit-cancel" onclick="cancelProfileEdit()">Cancel</button>
+  </div>
+</div>
+
+<div class="profile-section-label">Saved alarms</div>
+<div id="profileAlarmList" class="profile-alarm-list"></div>
+<div id="profileEmptyText" class="profile-empty"></div>
     <!-- PROFILE SLIDE PANEL -->
     <div class="profile-panel" id="profilePanel">
       <div class="profile-header">
@@ -426,15 +453,7 @@
       </div>
 
       <div class="profile-content">
-        <div class="profile-user">
-          <div class="profile-avatar">S</div>
-          <div class="profile-name">Sanitas User</div>
-        </div>
-
-        <div class="profile-section-label">Saved alarms</div>
-        <div id="profileAlarmList" class="profile-alarm-list"></div>
-        <div id="profileEmptyText" class="profile-empty"></div>
-      </div>
+   
     </div>
   </div>
   
