@@ -196,137 +196,6 @@
       opacity: 0.8;
     }
 
-    /* =============== PROFILE SLIDE PANEL =============== */
-.profile-panel {
-  position: absolute;
-  inset: 0;
-  background: #ffffff;
-  box-shadow: 4px 0 22px rgba(0,0,0,0.18);
-  transform: translateX(-100%);   /* HIDE PANEL */
-  transition: transform 0.25s ease-out;
-  z-index: 1500;
-  display: flex;
-  flex-direction: column;
-}
-
-    .profile-panel.open {
-      transform: translateX(-100);
-    }
-
-    .profile-header {
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #e3eefb;
-    }
-
-    .profile-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #123f70;
-    }
-
-    .profile-close {
-      border: none;
-      background: #f3f8ff;
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .profile-content {
-      flex: 1;
-      padding: 16px 18px 18px 18px;
-      overflow-y: auto;
-    }
-
-    .profile-user {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 18px;
-    }
-
-    .profile-avatar {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: #e0f1ff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      font-weight: 700;
-      color: #1b73d1;
-      margin-bottom: 8px;
-    }
-
-    .profile-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: #123f70;
-    }
-
-    .profile-section-label {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #7c8698;
-      margin-bottom: 8px;
-    }
-
-    .profile-alarm-list {
-      margin-top: 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .profile-alarm-pill {
-      border-radius: 16px;
-      border: 1px solid #e3eefb;
-      background: #f8fcff;
-      padding: 10px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .profile-alarm-left {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .profile-alarm-name {
-      font-weight: 600;
-      color: #1b3f7a;
-      font-size: 14px;
-    }
-
-    .profile-alarm-times {
-      margin-top: 3px;
-      color: #65718a;
-      font-size: 12px;
-    }
-
-    .profile-alarm-tag {
-      font-size: 10px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #e0f1ff;
-      color: #305c9b;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .profile-empty {
-      font-size: 13px;
-      color: #8a96aa;
-      margin-top: 6px;
-    }
-
     @media (max-width: 600px) {
       body {
         background: #ffffff;
@@ -442,6 +311,138 @@
         <div class="title-sub">Voithos</div>
       </div>
     </div>
+    /* =============== PROFILE SLIDE PANEL =============== */
+.profile-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: 4px 0 22px rgba(0,0,0,0.18);
+  transform: translateX(-100%);   /* <- THIS HIDES THE PANEL */
+  transition: transform 0.25s ease-out;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-panel.open {
+  transform: translateX(0);       /* <- SHOW ON OPEN */
+}
+    .profile-header {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e3eefb;
+    }
+
+    .profile-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #123f70;
+    }
+
+    .profile-close {
+      border: none;
+      background: #f3f8ff;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .profile-content {
+      flex: 1;
+      padding: 16px 18px 18px 18px;
+      overflow-y: auto;
+    }
+
+    .profile-user {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .profile-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: #e0f1ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      font-weight: 700;
+      color: #1b73d1;
+      margin-bottom: 8px;
+    }
+
+    .profile-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #123f70;
+    }
+
+    .profile-section-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #7c8698;
+      margin-bottom: 8px;
+    }
+
+    .profile-alarm-list {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .profile-alarm-pill {
+      border-radius: 16px;
+      border: 1px solid #e3eefb;
+      background: #f8fcff;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .profile-alarm-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-alarm-name {
+      font-weight: 600;
+      color: #1b3f7a;
+      font-size: 14px;
+    }
+
+    .profile-alarm-times {
+      margin-top: 3px;
+      color: #65718a;
+      font-size: 12px;
+    }
+
+    .profile-alarm-tag {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e0f1ff;
+      color: #305c9b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .profile-empty {
+      font-size: 13px;
+      color: #8a96aa;
+      margin-top: 6px;
+    }
 
     <!-- Home content -->
     <div class="chat-area">
@@ -557,6 +558,7 @@
   </div>
 </div>
     
+
   <script>
   // ===== PROFILE DATA (stored in localStorage) =====
   const PROFILE_KEY = "sanitas_profile";
