@@ -227,6 +227,26 @@
       margin-top: 12px;
     }
 
+    <!-- 👤 PROFILE + SAVED ALARMS SLIDE PANEL -->
+    <div class="profile-panel" id="profilePanel">
+      <div class="profile-header">
+        <span class="profile-title">Profile & Alarms</span>
+        <button class="profile-close" onclick="closeProfilePanel()">✕</button>
+      </div>
+
+      <div class="profile-content">
+        <div class="profile-user">
+          <!-- you can later change initial + name from real data -->
+          <div class="profile-avatar">S</div>
+          <div class="profile-name">Sanitas User</div>
+        </div>
+
+        <div class="profile-section-label">Saved alarms</div>
+        <div id="profileAlarmList" class="profile-alarm-list"></div>
+        <div id="profileEmptyText" class="profile-empty"></div>
+      </div>
+    </div>
+    
 .bottom-bar {
   padding: 12px 16px;
   background: #ffffff;
@@ -321,6 +341,148 @@
         font-size: 22px;
       }
     }
+    /* ===== PROFILE + SAVED ALARMS PANEL (slides like ChatGPT) ===== */
+.profile-panel {
+  position: absolute;
+  inset: 0;                       /* fill app-frame */
+  background: #ffffff;
+  box-shadow: 4px 0 22px rgba(0,0,0,0.18);
+  transform: translateX(-100%);   /* hidden to left */
+  transition: transform 0.25s ease-out;
+  z-index: 1500;
+  display: flex;
+  flex-direction: column;
+}
+
+/* when open */
+.profile-panel.open {
+  transform: translateX(0);
+}
+
+.profile-header {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e3eefb;
+}
+
+.profile-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #123f70;
+}
+
+.profile-close {
+  border: none;
+  background: #f3f8ff;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.profile-content {
+  flex: 1;
+  padding: 16px 18px 18px 18px;
+  overflow-y: auto;
+}
+
+/* avatar + name */
+.profile-user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #e0f1ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 700;
+  color: #1b73d1;
+  margin-bottom: 8px;
+}
+
+.profile-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #123f70;
+}
+
+/* re-use section + alarms styles you already had */
+.profile-section-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #7c8698;
+  margin-bottom: 8px;
+}
+
+/* alarm list inside profile panel */
+.profile-alarm-list {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-alarm-pill {
+  border-radius: 16px;
+  border: 1px solid #e3eefb;
+  background: #f8fcff;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-alarm-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-alarm-name {
+  font-weight: 600;
+  color: #1b3f7a;
+  font-size: 14px;
+}
+
+.profile-alarm-times {
+  margin-top: 3px;
+  color: #65718a;
+  font-size: 12px;
+}
+
+.profile-alarm-tag {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #e0f1ff;
+  color: #305c9b;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.profile-empty {
+  font-size: 13px;
+  color: #8a96aa;
+  margin-top: 6px;
+}
+
+/* on mobile, panel still covers full frame */
+@media (max-width: 600px) {
+  .profile-panel {
+    box-shadow: none;
+  }
+}
+    
   </style>
 </head>
 <body>
@@ -539,6 +701,113 @@
     renderAlarms();
     checkAlarms();
     setInterval(checkAlarms, 1000);
+    // ---------- PROFILE PANEL LOGIC ----------
+
+function getAlarms() {
+  try {
+    return JSON.parse(localStorage.getItem('sanitas_alarms') || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+function openProfilePanel() {
+  const panel = document.getElementById('profilePanel');
+  if (!panel) return;
+
+  renderProfileAlarms();
+  panel.classList.add('open');
+}
+
+function closeProfilePanel() {
+  const panel = document.getElementById('profilePanel');
+  if (!panel) return;
+
+  panel.classList.remove('open');
+}
+
+// show saved alarms inside profile panel
+function renderProfileAlarms() {
+  const listDiv = document.getElementById('profileAlarmList');
+  const emptyText = document.getElementById('profileEmptyText');
+  if (!listDiv || !emptyText) return;
+
+  const alarms = getAlarms();
+
+  if (!alarms.length) {
+    listDiv.innerHTML = '';
+    emptyText.textContent = 'No medicine alarms yet.';
+    return;
+  }
+
+  emptyText.textContent = '';
+
+  let html = '';
+  alarms.forEach(alarm => {
+    const t = alarm.times || {};
+    const parts = [];
+    if (t.beforeBreakfast) parts.push('BB: ' + t.beforeBreakfast);
+    if (t.afterBreakfast) parts.push('AB: ' + t.afterBreakfast);
+    if (t.afternoon) parts.push('Afternoon: ' + t.afternoon);
+    if (t.night) parts.push('Night: ' + t.night);
+    const timesText = parts.join(' · ') || 'No time set';
+
+    const name = alarm.patient
+      ? `${alarm.patient} – ${alarm.medicine}`
+      : (alarm.medicine || 'Medicine');
+
+    html += `
+      <div class="profile-alarm-pill">
+        <div class="profile-alarm-left">
+          <div class="profile-alarm-name">${name}</div>
+          <div class="profile-alarm-times">${timesText}</div>
+        </div>
+        <div class="profile-alarm-tag">MEDICINE</div>
+      </div>
+    `;
+  });
+
+  listDiv.innerHTML = html;
+}
+
+// ---------- OPTIONAL: open panel by swiping from left edge ----------
+let touchStartX = null;
+
+document.addEventListener('touchstart', (e) => {
+  const t = e.touches[0];
+  touchStartX = t.clientX;
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+  if (touchStartX === null) return;
+  const t = e.changedTouches[0];
+  const dx = t.clientX - touchStartX;
+
+  // finger started near left edge & moved right enough
+  if (touchStartX < 30 && dx > 60) {
+    openProfilePanel();
+  }
+  touchStartX = null;
+}, { passive: true });
+
+// inside panel, swipe left to close
+document.getElementById('profilePanel').addEventListener('touchstart', (e) => {
+  const t = e.touches[0];
+  touchStartX = t.clientX;
+}, { passive: true });
+
+document.getElementById('profilePanel').addEventListener('touchend', (e) => {
+  if (touchStartX === null) return;
+  const t = e.changedTouches[0];
+  const dx = t.clientX - touchStartX;
+
+  // swipe left
+  if (dx < -60) {
+    closeProfilePanel();
+  }
+  touchStartX = null;
+}, { passive: true });
+    
   </script>
 </body>
 </html>
