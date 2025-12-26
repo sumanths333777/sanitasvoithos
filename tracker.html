@@ -1,56 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tracking | Sanitas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
 <body>
+<div class="app-wrapper">
 
-  <div class="app-wrapper">
+  <!-- HEADER -->
+  <div class="top-header">
+    <h2>SANITAS</h2>
+    <p>Voithos</p>
+  </div>
 
-    <div class="top-header">
-      <h2>SANITAS</h2>
-      <p>Voithos</p>
-    </div>
+  <!-- CONTENT -->
+  <div class="content-card">
 
-    <div class="content-card">
+    <label>Heart Rate</label>
+    <input type="number" id="hr" placeholder="Enter bpm">
 
-      <label>Heart Rate</label>
-      <input type="number" placeholder="Enter bpm">
+    <label>Water Intake</label>
+    <select id="water">
+      <option>0 Glass</option>
+      <option>1 Glass</option>
+      <option>2 Glass</option>
+      <option>4 Glass</option>
+      <option>6 Glass</option>
+    </select>
 
-      <label>Water Intake</label>
-      <select>
-        <option>0 Glass</option>
-        <option>1–3 Glasses</option>
-        <option>4–6 Glasses</option>
-        <option>7+ Glasses</option>
-      </select>
+    <label>Sleep</label>
+    <select id="sleep">
+      <option>Less than 5 hrs</option>
+      <option>5–7 hrs</option>
+      <option>7–9 hrs</option>
+    </select>
 
-      <label>Sleep</label>
-      <select>
-        <option>Less than 5 hrs</option>
-        <option>6–7 hrs</option>
-        <option>8+ hrs</option>
-      </select>
+    <label>Steps</label>
+    <input type="number" id="steps" placeholder="Enter steps">
 
-      <label>Steps</label>
-      <input type="number" placeholder="Enter steps">
+    <label>Mood</label>
+    <select id="mood">
+      <option>Happy 😊</option>
+      <option>Normal 🙂</option>
+      <option>Sad 😔</option>
+    </select>
 
-      <label>Mood</label>
-      <select>
-        <option>Happy 😊</option>
-        <option>Normal 😐</option>
-        <option>Stressed 😟</option>
-      </select>
-
-      <div class="saved-title">SAVED TRACKING</div>
-
-      <div class="saved-item">
-        <div>
-          <strong>Today</strong><br>
-          HR: 72 | Water: 6 | Sleep: 7h
-        </div>
-        <button class="delete-btn">Delete</button>
-      </div>
-
-    </div>
-
-    <button class="save-btn">Save</button>
+    <div class="saved-title">SAVED TRACKING</div>
+    <div id="savedData"></div>
 
   </div>
 
+  <button class="save-btn" onclick="saveTracking()">Save Tracking</button>
+
+</div>
+
+<script>
+function saveTracking() {
+  const data = {
+    hr: hr.value,
+    water: water.value,
+    sleep: sleep.value,
+    steps: steps.value,
+    mood: mood.value
+  };
+
+  localStorage.setItem("tracking", JSON.stringify(data));
+  render();
+}
+
+function render() {
+  const data = JSON.parse(localStorage.getItem("tracking"));
+  if (!data) return;
+
+  savedData.innerHTML = `
+    <div class="saved-item">
+      <div>
+        HR: ${data.hr} | Water: ${data.water}<br>
+        Sleep: ${data.sleep} | Steps: ${data.steps}<br>
+        Mood: ${data.mood}
+      </div>
+      <button class="delete-btn" onclick="clearData()">Delete</button>
+    </div>
+  `;
+}
+
+function clearData() {
+  localStorage.removeItem("tracking");
+  savedData.innerHTML = "";
+}
+
+render();
+</script>
+
 </body>
+</html>
