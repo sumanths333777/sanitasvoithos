@@ -7,11 +7,20 @@
         stroke-width="1.6"
         stroke-linecap="round"/>
 
-  <!-- heartbeat line -->
-  <path d="M6 14H10L12 10L16 18L18 14H22"
+  <!-- activity bars -->
+  <path d="M9 20V14"
         stroke="#0F8BFF"
         stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
+        stroke-linecap="round"/>
+
+  <path d="M14 20V10"
+        stroke="#0F8BFF"
+        stroke-width="1.8"
+        stroke-linecap="round"/>
+
+  <path d="M19 20V16"
+        stroke="#0F8BFF"
+        stroke-width="1.8"
+        stroke-linecap="round"/>
 
 </svg>
