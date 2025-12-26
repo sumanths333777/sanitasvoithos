@@ -53,3 +53,14 @@ body {
   padding: 6px 12px;
   color: #c00;
 }
+.save-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+}
