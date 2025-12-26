@@ -13,7 +13,7 @@ body {
 }
 
 /* =====================
-   APP WRAPPER (VERY IMPORTANT)
+   APP WRAPPER
 ===================== */
 .app-wrapper {
   max-width: 420px;
@@ -22,7 +22,7 @@ body {
 }
 
 /* =====================
-   HEADER (SANITAS)
+   HEADER
 ===================== */
 .top-header {
   background: #dff0ff;
@@ -44,15 +44,12 @@ body {
 }
 
 /* =====================
-   CONTENT CARD
+   CONTENT
 ===================== */
 .content-card {
   padding: 20px;
 }
 
-/* =====================
-   FORM ELEMENTS
-===================== */
 label {
   display: block;
   margin-top: 16px;
@@ -62,26 +59,25 @@ label {
 
 input,
 select {
-  display: block;
   width: 100%;
   padding: 12px;
   margin-top: 6px;
   border-radius: 20px;
   border: none;
   background: #eaf4ff;
-  outline: none;
   font-size: 14px;
+  outline: none;
 }
 
 /* =====================
-   SAVE BUTTON (MEDICINE + TRACKER)
+   SAVE BUTTON
 ===================== */
 .save-btn {
   width: calc(100% - 40px);
   margin: 20px;
   padding: 14px;
   background: #3b82f6;
-  color: #fff;
+  color: white;
   border: none;
   border-radius: 25px;
   font-size: 16px;
@@ -113,76 +109,15 @@ select {
   align-items: center;
 }
 
-/* =====================
-   DELETE BUTTON
-===================== */
 .delete-btn {
   background: #ffd6d6;
   border: none;
   border-radius: 15px;
   padding: 6px 12px;
   color: #c00;
-  font-size: 13px;
   cursor: pointer;
 }
 
-.delete-btn:hover {
-  background: #ffbcbc;
-}
 
-/* =====================
-   HOME PAGE CARDS
-===================== */
-.home-grid-wrapper {
-  padding: 20px;
-}
 
-.grid-6 {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-}
 
-.feature-card {
-  border: 1px solid #cfe6ff;
-  border-radius: 18px;
-  padding: 20px;
-  text-align: center;
-  background: #ffffff;
-  cursor: pointer;
-}
-
-.feature-card:hover {
-  background: #f0f8ff;
-}
-
-.feature-card img {
-  width: 28px;
-  margin-bottom: 8px;
-}
-
-.feature-label {
-  font-size: 14px;
-  color: #333;
-}
-
-/* =====================
-   SEARCH BAR (HOME)
-===================== */
-.search-bar {
-  margin: 20px;
-  padding: 12px;
-  border-radius: 25px;
-  border: none;
-  background: #eaf4ff;
-  width: calc(100% - 40px);
-}
-
-/* =====================
-   MOBILE SAFETY
-===================== */
-@media (max-width: 480px) {
-  .app-wrapper {
-    max-width: 100%;
-  }
-}
