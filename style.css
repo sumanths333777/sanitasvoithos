@@ -3,11 +3,15 @@ body {
   background: #f7fbff;
   margin: 0;
 }
-.page-container {
+
+/* Whole app container */
+.app-wrapper {
   max-width: 420px;
-  margin: auto;
+  margin: 0 auto;
+  padding-bottom: 30px;
 }
 
+/* Header */
 .top-header {
   background: #dff0ff;
   text-align: center;
@@ -16,18 +20,21 @@ body {
   border-bottom-right-radius: 20px;
 }
 
-.form-section {
+/* Main card */
+.content-card {
   padding: 20px;
 }
 
-.form-section label {
+/* Labels */
+.content-card label {
   display: block;
-  margin-top: 15px;
+  margin-top: 16px;
   font-weight: 500;
 }
 
-.form-section input,
-.form-section select {
+/* Inputs */
+.content-card input,
+.content-card select {
   width: 100%;
   padding: 12px;
   margin-top: 6px;
@@ -37,17 +44,33 @@ body {
   outline: none;
 }
 
-.saved-section {
-  padding: 20px;
+/* Saved section */
+.saved-title {
+  margin-top: 25px;
+  font-size: 13px;
+  color: #777;
 }
 
-.saved-card {
+.saved-item {
   background: #f0f8ff;
   border-radius: 15px;
-  padding: 15px;
+  padding: 12px;
+  margin-top: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+/* Buttons */
+.save-btn {
+  width: calc(100% - 40px);
+  margin: 20px;
+  padding: 14px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
 }
 
 .delete-btn {
@@ -56,15 +79,4 @@ body {
   border-radius: 15px;
   padding: 6px 12px;
   color: #c00;
-}
-.save-btn {
-  width: 100%;
-  margin-top: 20px;
-  padding: 14px;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 25px;
-  font-size: 16px;
-  font-weight: bold;
 }
