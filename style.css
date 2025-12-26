@@ -3,6 +3,10 @@ body {
   background: #f7fbff;
   margin: 0;
 }
+.page-container {
+  max-width: 420px;
+  margin: auto;
+}
 
 .top-header {
   background: #dff0ff;
