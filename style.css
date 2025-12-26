@@ -117,7 +117,24 @@ select {
   color: #c00;
   cursor: pointer;
 }
+/* =====================
+   DESKTOP FIX
+===================== */
+@media (min-width: 768px) {
+  .app-wrapper {
+    max-width: 720px;   /* desktop width */
+  }
 
+  .content-card {
+    padding: 30px 40px;
+  }
+
+  .save-btn {
+    width: 300px;
+    margin: 30px auto;
+    display: block;
+  }
+}
 
 
 
