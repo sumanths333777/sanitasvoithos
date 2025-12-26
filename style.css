@@ -166,3 +166,45 @@ select {
     width: 60%;
   }
 }
+
+/* =====================
+   FINAL DESKTOP LOCK
+===================== */
+@media (min-width: 900px) {
+
+  .app-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .content-card {
+    padding: 30px 40px;
+  }
+
+  .tracker-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: flex-start;
+  }
+
+  .tracker-form {
+    max-width: 500px;
+  }
+
+  .tracker-saved {
+    background: #f7fbff;
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .save-btn {
+    width: 260px;
+    margin-top: 25px;
+  }
+
+  input,
+  select {
+    max-width: 100%;
+  }
+}
