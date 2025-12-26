@@ -1,49 +1,64 @@
+​
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Tracking | Sanitas</title>
   <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
 
   <!-- Header -->
-  <div class="header">
-    <h2>📊 Health Tracking</h2>
-    <p>Track your daily health stats</p>
+  <div class="top-header">
+    <h2>SANITAS</h2>
+    <p>Voithos</p>
   </div>
 
-  <!-- Tracking cards -->
-  <div class="tracking-grid">
+  <!-- Tracker Form -->
+  <div class="form-section">
 
-    <div class="track-card">
-      ❤️ Heart Rate
-      <input type="number" placeholder="bpm">
-    </div>
+    <label>Heart Rate</label>
+    <input type="number" placeholder="Enter bpm">
 
-    <div class="track-card">
-      💧 Water Intake
-      <input type="number" placeholder="Glasses">
-    </div>
+    <label>Water Intake</label>
+    <select>
+      <option>0 Glass</option>
+      <option>1–3 Glasses</option>
+      <option>4–6 Glasses</option>
+      <option>7+ Glasses</option>
+    </select>
 
-    <div class="track-card">
-      💤 Sleep
-      <input type="number" placeholder="Hours">
-    </div>
+    <label>Sleep</label>
+    <select>
+      <option>Less than 5 hrs</option>
+      <option>6–7 hrs</option>
+      <option>8+ hrs</option>
+    </select>
 
-    <div class="track-card">
-      🚶 Steps
-      <input type="number" placeholder="Steps">
-    </div>
+    <label>Steps</label>
+    <input type="number" placeholder="Enter steps">
 
-    <div class="track-card">
-      😐 Mood
-      <select>
-        <option>Happy</option>
-        <option>Normal</option>
-        <option>Stressed</option>
-      </select>
+    <label>Mood</label>
+    <select>
+      <option>Happy 😊</option>
+      <option>Normal 😐</option>
+      <option>Stressed 😟</option>
+    </select>
+
+  </div>
+
+  <!-- Saved Section -->
+  <div class="saved-section">
+    <h4>SAVED TRACKING</h4>
+
+    <div class="saved-card">
+      <div>
+        <strong>Today</strong><br>
+        HR: 72 | Water: 6 | Sleep: 7h
+      </div>
+      <button class="delete-btn">Delete</button>
     </div>
 
   </div>
