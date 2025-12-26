@@ -19,41 +19,53 @@
   <!-- CONTENT -->
   <div class="content-card">
 
-    <label>Heart Rate</label>
-    <input type="number" id="hr" placeholder="Enter bpm">
+    <!-- DESKTOP LAYOUT WRAPPER -->
+    <div class="tracker-layout">
 
-    <label>Water Intake</label>
-    <select id="water">
-      <option>0 Glass</option>
-      <option>1 Glass</option>
-      <option>2 Glass</option>
-      <option>4 Glass</option>
-      <option>6 Glass</option>
-    </select>
+      <!-- LEFT : FORM -->
+      <div class="tracker-form">
 
-    <label>Sleep</label>
-    <select id="sleep">
-      <option>Less than 5 hrs</option>
-      <option>5–7 hrs</option>
-      <option>7–9 hrs</option>
-    </select>
+        <label>Heart Rate</label>
+        <input type="number" id="hr" placeholder="Enter bpm">
 
-    <label>Steps</label>
-    <input type="number" id="steps" placeholder="Enter steps">
+        <label>Water Intake</label>
+        <select id="water">
+          <option>0 Glass</option>
+          <option>1 Glass</option>
+          <option>2 Glass</option>
+          <option>4 Glass</option>
+          <option>6 Glass</option>
+        </select>
 
-    <label>Mood</label>
-    <select id="mood">
-      <option>Happy 😊</option>
-      <option>Normal 🙂</option>
-      <option>Sad 😔</option>
-    </select>
+        <label>Sleep</label>
+        <select id="sleep">
+          <option>Less than 5 hrs</option>
+          <option>5–7 hrs</option>
+          <option>7–9 hrs</option>
+        </select>
 
-    <div class="saved-title">SAVED TRACKING</div>
-    <div id="savedData"></div>
+        <label>Steps</label>
+        <input type="number" id="steps" placeholder="Enter steps">
 
+        <label>Mood</label>
+        <select id="mood">
+          <option>Happy 😊</option>
+          <option>Normal 🙂</option>
+          <option>Sad 😔</option>
+        </select>
+
+        <button class="save-btn" onclick="saveTracking()">Save Tracking</button>
+
+      </div>
+
+      <!-- RIGHT : SAVED -->
+      <div class="tracker-saved">
+        <div class="saved-title">SAVED TRACKING</div>
+        <div id="savedData"></div>
+      </div>
+
+    </div>
   </div>
-
-  <button class="save-btn" onclick="saveTracking()">Save Tracking</button>
 
 </div>
 
