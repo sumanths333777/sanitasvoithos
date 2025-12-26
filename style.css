@@ -1,0 +1,55 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f7fbff;
+  margin: 0;
+}
+
+.top-header {
+  background: #dff0ff;
+  text-align: center;
+  padding: 20px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.form-section {
+  padding: 20px;
+}
+
+.form-section label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 500;
+}
+
+.form-section input,
+.form-section select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border-radius: 20px;
+  border: none;
+  background: #eaf4ff;
+  outline: none;
+}
+
+.saved-section {
+  padding: 20px;
+}
+
+.saved-card {
+  background: #f0f8ff;
+  border-radius: 15px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-btn {
+  background: #ffd6d6;
+  border: none;
+  border-radius: 15px;
+  padding: 6px 12px;
+  color: #c00;
+}
