@@ -1,82 +1,56 @@
-​
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Tracking | Sanitas</title>
-  <link rel="stylesheet" href="style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-
 <body>
 
-  <!-- Header -->
-  <div class="top-header">
-    <h2>SANITAS</h2>
-    <p>Voithos</p>
-  </div>
-  
-<div class="page-container">
+  <div class="app-wrapper">
 
-  <!-- form-section -->
-  <div class="form-section">
-    ...
-  </div>
-
-  <!-- saved-section -->
-  <div class="saved-section">
-    ...
-  </div>
-
-</div>
-  
-  <!-- Tracker Form -->
-  <div class="form-section">
-
-    <label>Heart Rate</label>
-    <input type="number" placeholder="Enter bpm">
-
-    <label>Water Intake</label>
-    <select>
-      <option>0 Glass</option>
-      <option>1–3 Glasses</option>
-      <option>4–6 Glasses</option>
-      <option>7+ Glasses</option>
-    </select>
-
-    <label>Sleep</label>
-    <select>
-      <option>Less than 5 hrs</option>
-      <option>6–7 hrs</option>
-      <option>8+ hrs</option>
-    </select>
-
-    <label>Steps</label>
-    <input type="number" placeholder="Enter steps">
-
-    <label>Mood</label>
-    <select>
-      <option>Happy 😊</option>
-      <option>Normal 😐</option>
-      <option>Stressed 😟</option>
-    </select>
-    <button class= "save-btn">Save Tracking</button>
-
-  </div>
-
-  <!-- Saved Section -->
-  <div class="saved-section">
-    <h4>SAVED TRACKING</h4>
-
-    <div class="saved-card">
-      <div>
-        <strong>Today</strong><br>
-        HR: 72 | Water: 6 | Sleep: 7h
-      </div>
-      <button class="delete-btn">Delete</button>
+    <div class="top-header">
+      <h2>SANITAS</h2>
+      <p>Voithos</p>
     </div>
+
+    <div class="content-card">
+
+      <label>Heart Rate</label>
+      <input type="number" placeholder="Enter bpm">
+
+      <label>Water Intake</label>
+      <select>
+        <option>0 Glass</option>
+        <option>1–3 Glasses</option>
+        <option>4–6 Glasses</option>
+        <option>7+ Glasses</option>
+      </select>
+
+      <label>Sleep</label>
+      <select>
+        <option>Less than 5 hrs</option>
+        <option>6–7 hrs</option>
+        <option>8+ hrs</option>
+      </select>
+
+      <label>Steps</label>
+      <input type="number" placeholder="Enter steps">
+
+      <label>Mood</label>
+      <select>
+        <option>Happy 😊</option>
+        <option>Normal 😐</option>
+        <option>Stressed 😟</option>
+      </select>
+
+      <div class="saved-title">SAVED TRACKING</div>
+
+      <div class="saved-item">
+        <div>
+          <strong>Today</strong><br>
+          HR: 72 | Water: 6 | Sleep: 7h
+        </div>
+        <button class="delete-btn">Delete</button>
+      </div>
+
+    </div>
+
+    <button class="save-btn">Save</button>
 
   </div>
 
 </body>
-</html>
