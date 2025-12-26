@@ -1,3 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28">
-  <circle cx="14" cy="14" r="10" stroke="blue" stroke-width="2" fill="none"/>
+<svg width="28" height="28" viewBox="0 0 28 28" fill="none"
+     xmlns="http://www.w3.org/2000/svg">
+
+  <!-- baseline -->
+  <path d="M6 20H22"
+        stroke="#0F8BFF"
+        stroke-width="1.6"
+        stroke-linecap="round"/>
+
+  <!-- heartbeat line -->
+  <path d="M6 14H10L12 10L16 18L18 14H22"
+        stroke="#0F8BFF"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
 </svg>
