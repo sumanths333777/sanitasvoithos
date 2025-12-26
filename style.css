@@ -1,17 +1,29 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f7fbff;
-  margin: 0;
+/* =====================
+   GLOBAL RESET
+===================== */
+* {
+  box-sizing: border-box;
 }
 
-/* Whole app container */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f7fbff;
+  color: #333;
+}
+
+/* =====================
+   APP WRAPPER (VERY IMPORTANT)
+===================== */
 .app-wrapper {
   max-width: 420px;
   margin: 0 auto;
   padding-bottom: 30px;
 }
 
-/* Header */
+/* =====================
+   HEADER (SANITAS)
+===================== */
 .top-header {
   background: #dff0ff;
   text-align: center;
@@ -20,21 +32,37 @@ body {
   border-bottom-right-radius: 20px;
 }
 
-/* Main card */
+.top-header h2 {
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.top-header p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: #555;
+}
+
+/* =====================
+   CONTENT CARD
+===================== */
 .content-card {
   padding: 20px;
 }
 
-/* Labels */
-.content-card label {
+/* =====================
+   FORM ELEMENTS
+===================== */
+label {
   display: block;
   margin-top: 16px;
+  font-size: 14px;
   font-weight: 500;
 }
 
-/* Inputs */
-.content-card input,
-.content-card select {
+input,
+select {
+  display: block;
   width: 100%;
   padding: 12px;
   margin-top: 6px;
@@ -42,13 +70,37 @@ body {
   border: none;
   background: #eaf4ff;
   outline: none;
+  font-size: 14px;
 }
 
-/* Saved section */
+/* =====================
+   SAVE BUTTON (MEDICINE + TRACKER)
+===================== */
+.save-btn {
+  width: calc(100% - 40px);
+  margin: 20px;
+  padding: 14px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #2563eb;
+}
+
+/* =====================
+   SAVED SECTION
+===================== */
 .saved-title {
   margin-top: 25px;
   font-size: 13px;
   color: #777;
+  letter-spacing: 1px;
 }
 
 .saved-item {
@@ -61,22 +113,76 @@ body {
   align-items: center;
 }
 
-/* Buttons */
-.save-btn {
-  width: calc(100% - 40px);
-  margin: 20px;
-  padding: 14px;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 25px;
-  font-size: 16px;
-}
-
+/* =====================
+   DELETE BUTTON
+===================== */
 .delete-btn {
   background: #ffd6d6;
   border: none;
   border-radius: 15px;
   padding: 6px 12px;
   color: #c00;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #ffbcbc;
+}
+
+/* =====================
+   HOME PAGE CARDS
+===================== */
+.home-grid-wrapper {
+  padding: 20px;
+}
+
+.grid-6 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.feature-card {
+  border: 1px solid #cfe6ff;
+  border-radius: 18px;
+  padding: 20px;
+  text-align: center;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.feature-card:hover {
+  background: #f0f8ff;
+}
+
+.feature-card img {
+  width: 28px;
+  margin-bottom: 8px;
+}
+
+.feature-label {
+  font-size: 14px;
+  color: #333;
+}
+
+/* =====================
+   SEARCH BAR (HOME)
+===================== */
+.search-bar {
+  margin: 20px;
+  padding: 12px;
+  border-radius: 25px;
+  border: none;
+  background: #eaf4ff;
+  width: calc(100% - 40px);
+}
+
+/* =====================
+   MOBILE SAFETY
+===================== */
+@media (max-width: 480px) {
+  .app-wrapper {
+    max-width: 100%;
+  }
 }
